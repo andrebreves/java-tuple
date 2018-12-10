@@ -28,9 +28,6 @@ import java.util.Iterator;
 public class SourceGenerator {
 
     public static void main(String[] args) throws Exception {
-        // TODO: publish on GitHub
-        // TODO: publish on Maven Central
-
         String kind = args[0];
         int degrees = Integer.parseInt(args[1]);
         String folder = args[2];
