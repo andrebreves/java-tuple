@@ -201,8 +201,6 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
             generateCompareStaticMethod();
             code.append("    @Override\n");
             code.append("    public int compareTo(").append(className()).append(genericTypes()).append(" other) {\n");
-            code.append("        if (other == null) throw new NullPointerException();\n");
-            code.append("\n");
             code.append("        int result;\n");
             code.append(degrees.stream().map(to("        result = compare(v%0, other.v%0); if (result != 0) return result;\n")).collect(joining()));
             code.append("\n");

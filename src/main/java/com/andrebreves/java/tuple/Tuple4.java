@@ -77,8 +77,6 @@ public final class Tuple4<T1, T2, T3, T4> implements Tuple, Comparable<Tuple4<T1
 
     @Override
     public int compareTo(Tuple4<T1, T2, T3, T4> other) {
-        if (other == null) throw new NullPointerException();
-
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;

@@ -82,8 +82,6 @@ public final class Tuple5<T1, T2, T3, T4, T5> implements Tuple, Comparable<Tuple
 
     @Override
     public int compareTo(Tuple5<T1, T2, T3, T4, T5> other) {
-        if (other == null) throw new NullPointerException();
-
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;

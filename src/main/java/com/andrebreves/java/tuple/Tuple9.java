@@ -102,8 +102,6 @@ public final class Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> implements Tuple, 
 
     @Override
     public int compareTo(Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> other) {
-        if (other == null) throw new NullPointerException();
-
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;
