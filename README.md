@@ -1,5 +1,5 @@
 # java-tuple
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.andrebreves.java/java-tuple/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.andrebreves.java/java-tuple)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.andrebreves/java-tuple/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.andrebreves/java-tuple)
 
 Yet another Tuple library for Java 8 and up.
 
@@ -9,9 +9,9 @@ Add to ```pom.xml```:
 ```xml
 <dependencies>
     <dependency>
-        <groupId>com.andrebreves.java</groupId>
+        <groupId>com.andrebreves</groupId>
         <artifactId>java-tuple</artifactId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
     </dependency>
 </dependencies>
 ```
