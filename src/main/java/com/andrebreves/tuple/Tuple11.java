@@ -124,8 +124,7 @@ public final class Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> impleme
         result = compare(v9, other.v9); if (result != 0) return result;
         result = compare(v10, other.v10); if (result != 0) return result;
         result = compare(v11, other.v11); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

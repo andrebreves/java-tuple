@@ -106,8 +106,7 @@ public final class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> implements Tuple, Comp
         result = compare(v6, other.v6); if (result != 0) return result;
         result = compare(v7, other.v7); if (result != 0) return result;
         result = compare(v8, other.v8); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

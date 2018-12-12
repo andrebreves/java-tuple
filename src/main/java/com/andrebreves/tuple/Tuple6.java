@@ -94,8 +94,7 @@ public final class Tuple6<T1, T2, T3, T4, T5, T6> implements Tuple, Comparable<T
         result = compare(v4, other.v4); if (result != 0) return result;
         result = compare(v5, other.v5); if (result != 0) return result;
         result = compare(v6, other.v6); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

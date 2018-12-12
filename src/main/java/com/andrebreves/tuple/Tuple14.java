@@ -142,8 +142,7 @@ public final class Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
         result = compare(v12, other.v12); if (result != 0) return result;
         result = compare(v13, other.v13); if (result != 0) return result;
         result = compare(v14, other.v14); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

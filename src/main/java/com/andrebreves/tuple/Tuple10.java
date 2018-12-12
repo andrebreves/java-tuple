@@ -118,8 +118,7 @@ public final class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> implements T
         result = compare(v8, other.v8); if (result != 0) return result;
         result = compare(v9, other.v9); if (result != 0) return result;
         result = compare(v10, other.v10); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

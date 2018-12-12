@@ -100,8 +100,7 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> implements Tuple, Comparab
         result = compare(v5, other.v5); if (result != 0) return result;
         result = compare(v6, other.v6); if (result != 0) return result;
         result = compare(v7, other.v7); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

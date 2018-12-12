@@ -70,8 +70,7 @@ public final class Tuple2<T1, T2> implements Tuple, Comparable<Tuple2<T1, T2>> {
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

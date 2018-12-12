@@ -64,8 +64,7 @@ public final class Tuple1<T1> implements Tuple, Comparable<Tuple1<T1>> {
     public int compareTo(Tuple1<T1> other) {
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }

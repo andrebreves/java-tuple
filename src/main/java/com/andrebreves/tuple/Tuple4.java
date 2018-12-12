@@ -82,8 +82,7 @@ public final class Tuple4<T1, T2, T3, T4> implements Tuple, Comparable<Tuple4<T1
         result = compare(v2, other.v2); if (result != 0) return result;
         result = compare(v3, other.v3); if (result != 0) return result;
         result = compare(v4, other.v4); if (result != 0) return result;
-
-        return result;
+        return 0;
     }
 
 }
