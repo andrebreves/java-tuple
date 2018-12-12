@@ -21,34 +21,34 @@ Usage
 
 Java 8:
 ```java
-Tuple3<String, String, String> tuple = Tuple.of("v01", "v02", "v03");
+Tuple2<String, String> tuple = Tuple.of("v01", "v02");
 System.out.println(tuple.v1()); // "v01"
-System.out.println(tuple.v3()); // "v03"
+System.out.println(tuple.v2()); // "v02"
 
-List<Tuple3<String, Integer, String>> list = Arrays.asList(
+List<Tuple3<String, Integer, String>> tuples = Arrays.asList(
     Tuple.of("v10", 11, "v12"),
     Tuple.of("v20", 21, "v22"),
     Tuple.of("v30", 31, "v32")
 );
 
-list.stream()
+tuples.stream()
     .map(Tuple::v3)
     .forEachOrdered(System.out::print); // "v12v22v32"
 ```
 
 Java 10:
 ```java
-var tuple = Tuple.of("v01", "v02", "v03");
+var tuple = Tuple.of("v01", "v02");
 System.out.println(tuple.v1()); // "v01"
-System.out.println(tuple.v3()); // "v03"
+System.out.println(tuple.v2()); // "v02"
 
-var list = List.of(
+var tuples = List.of(
     Tuple.of("v10", 11, "v12"),
     Tuple.of("v20", 21, "v22"),
     Tuple.of("v30", 31, "v32")
 );
 
-list.stream()
+tuples.stream()
     .map(Tuple::v3)
     .forEachOrdered(System.out::print); // "v12v22v32"
 ```
