@@ -13,12 +13,13 @@
  */
 package com.andrebreves.tuple;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.IntStream;
-
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Generates unit tests for the Tuple classes.
@@ -27,12 +28,14 @@ import static java.util.stream.Collectors.toList;
 public class TupleClassTestGenerator implements ClassGenerator {
 
     private final int degree;
+    private final int maxDegree;
     private final List<Integer> degrees;
     private final StringBuilder code;
 
-    public TupleClassTestGenerator(int degree) {
+    public TupleClassTestGenerator(int degree, int maxDegree) {
         if (degree < 0) throw new IllegalArgumentException("Invalid degree: " + degree);
         this.degree = degree;
+        this.maxDegree = maxDegree;
         this.degrees = IntStream.rangeClosed(1, degree).boxed().collect(toList());
         code = new StringBuilder();
         generateSourceCode();
@@ -118,6 +121,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
     private void generateTests() {
         generateDegreeTests();
         generateOfTests();
+        generateConcatTests();
         generateVxTests();
         generateEqualsTests();
         generateHashCodeTests();
@@ -144,6 +148,31 @@ public class TupleClassTestGenerator implements ClassGenerator {
         }
     }
 
+    private String stringValues(int start, int end) { return IntStream.rangeClosed(start, end).boxed().map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
+
+    private void generateConcatTests() {
+        code.append("    @Test\n");
+        code.append("    public void concat_shouldReturnEqualTuple").append(degree).append("_whenCalledWithNoArguments() {\n");
+        code.append("        assertEquals(tuple, tuple.concat());\n");
+        code.append("    }\n");
+        code.append("\n");
+        for (int i = degree + 1; i <= maxDegree; i++) {
+            code.append("    @Test\n");
+            code.append("    public void concat_shouldReturnNonNullTuple").append(i).append("Instance_whenCalledWith").append(i - degree).append("Value").append(i - degree > 1 ? "s" : "").append("() {\n");
+            code.append("        assertEquals(Tuple").append(i).append(".of").append(stringValues(1, i)).append(", tuple.concat").append(stringValues(degree + 1, i)).append(");\n");
+            code.append("    }\n");
+            code.append("\n");
+        }
+
+        for (int i = degree + 1; i <= maxDegree; i++) {
+            code.append("    @Test\n");
+            code.append("    public void concat_shouldReturnNonNullTuple").append(i).append("Instance_whenCalledWithTuple").append(i - degree).append("Argument() {\n");
+            code.append("        assertEquals(Tuple").append(i).append(".of").append(stringValues(1, i)).append(", tuple.concat(Tuple").append(i - degree).append(".of").append(stringValues(degree + 1, i)).append("));\n");
+            code.append("    }\n");
+            code.append("\n");
+        }
+    }
+    
     private void generateVxTests() {
         degrees.stream().forEachOrdered(d -> {
             String v = "v" + d;
@@ -190,8 +219,18 @@ public class TupleClassTestGenerator implements ClassGenerator {
             code.append("    public void equals_shouldReturnFalse_whenCalledWithAnotherTupleWithDifferentContent() {\n");
             code.append("        ").append(testedClass()).append(" other = ").append(testedClass()).append(".of").append(mixedValues()).append(";\n");
             code.append("        assertFalse(tuple.equals(other));\n");
-            code.append("    }\n");
             code.append("\n");
+            code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t = ").append(testedClass()).append(".of").append(repeatValue("0")).append(";\n");
+            code.append("\n");
+            for (int i = 1; i <= degree; i++) {
+                String args = Stream.of(Collections.nCopies(i - 1, "0"), List.of("1"), Collections.nCopies(degree - i, "0")).flatMap(List::stream).collect(joining(", ", "(", ")"));
+                code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t").append(i).append(" = ").append(testedClass()).append(".of").append(args).append(";\n");
+                code.append("        assertFalse(t.equals(t").append(i).append("));\n");
+                code.append("        assertFalse(t").append(i).append(".equals(t));\n");
+                code.append("\n");
+            }
+            code.append("    }\n");
+
         }
     }
 
@@ -249,10 +288,15 @@ public class TupleClassTestGenerator implements ClassGenerator {
             code.append("\n");
             code.append("    @Test\n");
             code.append("    public void compareTo_shouldReturnCorrectValue_whenComparingTwoCompatibleTuples() {\n");
-            code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t1 = ").append(testedClass()).append(".of").append(repeatValue("0")).append(";\n");
-            code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t2 = ").append(testedClass()).append(".of").append(repeatValue("1")).append(";\n");
-            code.append("        assertTrue(t1.compareTo(t2) < 0);\n");
-            code.append("        assertTrue(t2.compareTo(t1) > 0);\n");
+            code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t = ").append(testedClass()).append(".of").append(repeatValue("0")).append(";\n");
+            code.append("\n");
+            for (int i = 1; i <= degree; i++) {
+                String args = Stream.of(Collections.nCopies(i - 1, "0"), List.of("1"), Collections.nCopies(degree - i, "0")).flatMap(List::stream).collect(joining(", ", "(", ")"));
+                code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t").append(i).append(" = ").append(testedClass()).append(".of").append(args).append(";\n");
+                code.append("        assertTrue(t.compareTo(t").append(i).append(") < 0);\n");
+                code.append("        assertTrue(t").append(i).append(".compareTo(t) > 0);\n");
+                code.append("\n");
+            }
             code.append("    }\n");
             code.append("\n");
         }

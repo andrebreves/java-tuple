@@ -15,10 +15,9 @@ package com.andrebreves.tuple;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.IntStream;
-
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import java.util.stream.IntStream;
 
 /**
  * Generates a Tuple class of a specific degree.
@@ -27,12 +26,14 @@ import static java.util.stream.Collectors.toList;
 public final class TupleClassCodeGenerator implements ClassGenerator {
 
     private final int degree;
+    private final int maxDegree;
     private final List<Integer> degrees;
     private final StringBuilder code;
 
-    public TupleClassCodeGenerator(int degree) {
+    public TupleClassCodeGenerator(int degree, int maxDegree) {
         if (degree < 0) throw new IllegalArgumentException("Invalid degree: " + degree);
         this.degree = degree;
+        this.maxDegree = maxDegree;
         this.degrees = IntStream.rangeClosed(1, degree).boxed().collect(toList());
         code = new StringBuilder();
         generateSourceCode();
@@ -47,7 +48,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     @Override
     public String className() { return "Tuple" + degree; }
 
-    private static <T> Function<T, String> to(String format, Object... args) {
+    private static <T> Function<T, ? extends String> to(String format, Object... args) {
         return t -> String.format(format.replaceAll("%0", t.toString()), args);
     }
 
@@ -119,6 +120,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     
     private void generateMethods() {
         generateOfMethod();
+        generateConcatMethods();
         generateGetters();
         generateDegreeMethod();
         generateHashCodeMethod();
@@ -128,12 +130,46 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     
     private void generateOfMethod() {
         code.append("    /** Returns a Tuple that has ").append((degree == 0) ? "no" : degree).append(" value").append((degree == 1) ? "" : "s").append(". */\n");;
-        code.append("    public static ").append(genericTypes()).append(" ").append(className()).append(genericTypes()).append(" of").append(typedArgs()).append(" {\n");
+        code.append("    public static ").append(genericTypes()).append((degree == 0) ? "" : " ").append(className()).append(genericTypes()).append(" of").append(typedArgs()).append(" {\n");
         code.append("        return new ").append(className()).append((degree == 0) ? "" : "<>").append(args()).append(";\n");
         code.append("    }\n");
         code.append("\n");
     }
     
+    private void generateConcatMethods() {
+        IntStream.rangeClosed(degree, maxDegree).forEachOrdered(i -> generateConcatValuesMethod(i));
+        IntStream.rangeClosed(degree + 1, maxDegree).forEachOrdered(i -> generateConcatTupleMethod(i));
+    }
+    
+    private static List<Integer> range(int start, int end) { return IntStream.rangeClosed(start, end).boxed().collect(toList()); }
+    
+    private static <T> CharSequence format(List<T> list, Function<? super T,? extends CharSequence> mapper, CharSequence delimiter, CharSequence prefix, CharSequence suffix) {
+        if (list.isEmpty()) return "";
+        else return list.stream().map(mapper).collect(joining(delimiter, prefix, suffix));
+    }
+    
+    private void generateConcatValuesMethod(int lastDegree) {
+        code.append("    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */\n");
+        code.append("    public ").append(format(range(degree + 1, lastDegree), to("T%0"), ", ", "<", "> ")).append("Tuple").append(lastDegree).append(format(range(1, lastDegree), to("T%0"), ", ", "<", ">"));
+        code.append(" concat").append(range(degree + 1, lastDegree).stream().map(to("T%0 v%0")).collect(joining(", ", "(", ")"))).append(" {\n");
+        if (lastDegree == degree) code.append("        return this;\n");
+        else code.append("        return Tuple").append(lastDegree).append(".of").append(range(1, lastDegree).stream().map(to("v%0")).collect(joining(", ", "(", ")"))).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+
+    private void generateConcatTupleMethod(int lastDegree) {
+        code.append("    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */\n");
+        code.append("    public ").append(format(range(degree + 1, lastDegree), to("T%0"), ", ", "<", "> ")).append("Tuple").append(lastDegree).append(format(range(1, lastDegree), to("T%0"), ", ", "<", ">"));
+        code.append(" concat(Tuple").append(lastDegree - degree).append(range(degree + 1, lastDegree).stream().map(to("T%0")).collect(joining(", ", "<", ">"))).append(" t) {\n");
+        code.append("        return Tuple").append(lastDegree).append(".of(");
+        code.append(format(range(1, degree), to("v%0"), ", ", "", ", "));
+        code.append(format(range(1, lastDegree - degree), to("t.v%0()"), ", ", "", ""));
+        code.append(");\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+
     private void generateGetters() {
         if (degree == 0) return;
         degrees.stream().forEachOrdered(this::generateGetter);

@@ -14,9 +14,8 @@
 package com.andrebreves.tuple;
 
 import java.util.function.Function;
-import java.util.stream.IntStream;
-
 import static java.util.stream.Collectors.joining;
+import java.util.stream.IntStream;
 
 /**
  * Generates unit tests for the Tuple interface.
@@ -110,6 +109,7 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
             code.append("    @Test\n");
             code.append("    public void v").append(value).append("_shouldReturnCorrectValue_whenCalledWithTuple").append(degree).append("() {\n");
             code.append("        assertEquals(\"v").append(value).append("\", Tuple.of").append(stringValues(degree)).append(".v").append(value).append("());\n");
+            code.append("        assertEquals(\"v").append(value).append("\", Tuple.v").append(value).append("(Tuple.of").append(stringValues(degree)).append("));\n");
             code.append("    }\n");
             code.append("\n");
         });

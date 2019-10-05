@@ -56,6 +56,31 @@ public final class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
         return new Tuple13<>(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13);
     }
 
+    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
+    public Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> concat() {
+        return this;
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
+    public <T14> Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> concat(T14 v14) {
+        return Tuple14.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14);
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
+    public <T14, T15> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat(T14 v14, T15 v15) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T14> Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> concat(Tuple1<T14> t) {
+        return Tuple14.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, t.v1());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T14, T15> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat(Tuple2<T14, T15> t) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, t.v1(), t.v2());
+    }
+
     /** Returns the 1st value of this Tuple. */
     public T1 v1() { return v1; }
     /** Returns the 2nd value of this Tuple. */

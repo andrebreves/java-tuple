@@ -14,9 +14,8 @@
 package com.andrebreves.tuple;
 
 import java.util.function.Function;
-import java.util.stream.IntStream;
-
 import static java.util.stream.Collectors.joining;
+import java.util.stream.IntStream;
 
 /**
  * Generates the Tuple interface.

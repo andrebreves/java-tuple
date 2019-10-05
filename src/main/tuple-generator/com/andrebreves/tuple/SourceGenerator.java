@@ -36,13 +36,13 @@ public class SourceGenerator {
             case "code":
                 maybeSaveIn(folder, new TupleInterfaceCodeGenerator(degrees), ClassGenerator.class, TupleInterfaceCodeGenerator.class);
                 for (int degree = 0; degree <= degrees; degree++)
-                    maybeSaveIn(folder, new TupleClassCodeGenerator(degree), ClassGenerator.class, TupleClassCodeGenerator.class);
+                    maybeSaveIn(folder, new TupleClassCodeGenerator(degree, degrees), ClassGenerator.class, TupleClassCodeGenerator.class);
                 break;
 
             case "test":
                 maybeSaveIn(folder, new TupleInterfaceTestGenerator(degrees), ClassGenerator.class, TupleInterfaceTestGenerator.class);
                 for (int degree = 0; degree <= degrees; degree++)
-                    maybeSaveIn(folder, new TupleClassTestGenerator(degree), ClassGenerator.class, TupleClassTestGenerator.class);
+                    maybeSaveIn(folder, new TupleClassTestGenerator(degree, degrees), ClassGenerator.class, TupleClassTestGenerator.class);
                 break;
 
             default:
