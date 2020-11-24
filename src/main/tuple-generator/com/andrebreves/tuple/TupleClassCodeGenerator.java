@@ -48,7 +48,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     @Override
     public String className() { return "Tuple" + degree; }
 
-    private static <T> Function<T, ? extends String> to(String format, Object... args) {
+    private static <T> Function<T, String> to(String format, Object... args) {
         return t -> String.format(format.replaceAll("%0", t.toString()), args);
     }
 
