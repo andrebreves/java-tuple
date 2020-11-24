@@ -13,6 +13,7 @@
  */
 package com.andrebreves.tuple;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -223,7 +224,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
             code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t = ").append(testedClass()).append(".of").append(repeatValue("0")).append(";\n");
             code.append("\n");
             for (int i = 1; i <= degree; i++) {
-                String args = Stream.of(Collections.nCopies(i - 1, "0"), List.of("1"), Collections.nCopies(degree - i, "0")).flatMap(List::stream).collect(joining(", ", "(", ")"));
+                String args = Stream.of(Collections.nCopies(i - 1, "0"), Arrays.asList("1"), Collections.nCopies(degree - i, "0")).flatMap(List::stream).collect(joining(", ", "(", ")"));
                 code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t").append(i).append(" = ").append(testedClass()).append(".of").append(args).append(";\n");
                 code.append("        assertFalse(t.equals(t").append(i).append("));\n");
                 code.append("        assertFalse(t").append(i).append(".equals(t));\n");
@@ -291,7 +292,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
             code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t = ").append(testedClass()).append(".of").append(repeatValue("0")).append(";\n");
             code.append("\n");
             for (int i = 1; i <= degree; i++) {
-                String args = Stream.of(Collections.nCopies(i - 1, "0"), List.of("1"), Collections.nCopies(degree - i, "0")).flatMap(List::stream).collect(joining(", ", "(", ")"));
+                String args = Stream.of(Collections.nCopies(i - 1, "0"), Arrays.asList("1"), Collections.nCopies(degree - i, "0")).flatMap(List::stream).collect(joining(", ", "(", ")"));
                 code.append("        ").append(testedClass()).append(genericType("Integer")).append(" t").append(i).append(" = ").append(testedClass()).append(".of").append(args).append(";\n");
                 code.append("        assertTrue(t.compareTo(t").append(i).append(") < 0);\n");
                 code.append("        assertTrue(t").append(i).append(".compareTo(t) > 0);\n");
