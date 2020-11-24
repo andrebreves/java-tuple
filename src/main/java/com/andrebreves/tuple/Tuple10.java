@@ -32,7 +32,7 @@ public final class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> implements T
     private final T9 v9;
     private final T10 v10;
 
-    private Tuple10(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10) { 
+    private Tuple10(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -162,6 +162,7 @@ public final class Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> implements T
 
     @Override
     public int compareTo(Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> other) {
+        if (other == null) throw new NullPointerException();
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;

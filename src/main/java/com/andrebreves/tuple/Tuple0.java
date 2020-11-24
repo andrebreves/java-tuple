@@ -19,12 +19,14 @@ package com.andrebreves.tuple;
  */
 public final class Tuple0 implements Tuple, Comparable<Tuple0> {
 
-    private Tuple0() { 
+    private static final Tuple0 INSTANCE = new Tuple0();
+
+    private Tuple0() {
     }
 
     /** Returns a Tuple that has no values. */
     public static Tuple0 of() {
-        return new Tuple0();
+        return INSTANCE;
     }
 
     /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */

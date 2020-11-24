@@ -29,7 +29,7 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> implements Tuple, Comparab
     private final T6 v6;
     private final T7 v7;
 
-    private Tuple7(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7) { 
+    private Tuple7(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -177,6 +177,7 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> implements Tuple, Comparab
 
     @Override
     public int compareTo(Tuple7<T1, T2, T3, T4, T5, T6, T7> other) {
+        if (other == null) throw new NullPointerException();
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;

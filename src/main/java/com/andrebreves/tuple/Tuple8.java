@@ -30,7 +30,7 @@ public final class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> implements Tuple, Comp
     private final T7 v7;
     private final T8 v8;
 
-    private Tuple8(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8) { 
+    private Tuple8(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -172,6 +172,7 @@ public final class Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> implements Tuple, Comp
 
     @Override
     public int compareTo(Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> other) {
+        if (other == null) throw new NullPointerException();
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;
