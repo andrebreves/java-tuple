@@ -35,7 +35,7 @@ public final class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
     private final T12 v12;
     private final T13 v13;
 
-    private Tuple13(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13) { 
+    private Tuple13(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13) {
         this.v1 = v1;
         this.v2 = v2;
         this.v3 = v3;
@@ -147,6 +147,7 @@ public final class Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
 
     @Override
     public int compareTo(Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> other) {
+        if (other == null) throw new NullPointerException();
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;

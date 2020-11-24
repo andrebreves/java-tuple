@@ -24,7 +24,7 @@ public final class Tuple2<T1, T2> implements Tuple, Comparable<Tuple2<T1, T2>> {
     private final T1 v1;
     private final T2 v2;
 
-    private Tuple2(T1 v1, T2 v2) { 
+    private Tuple2(T1 v1, T2 v2) {
         this.v1 = v1;
         this.v2 = v2;
     }
@@ -202,6 +202,7 @@ public final class Tuple2<T1, T2> implements Tuple, Comparable<Tuple2<T1, T2>> {
 
     @Override
     public int compareTo(Tuple2<T1, T2> other) {
+        if (other == null) throw new NullPointerException();
         int result;
         result = compare(v1, other.v1); if (result != 0) return result;
         result = compare(v2, other.v2); if (result != 0) return result;

@@ -106,13 +106,13 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     }
     
     private void generateFields() {
-        if (degree == 0) return;
-        code.append(degrees.stream().map(to("    private final T%0 v%0;\n")).collect(joining()));
+        if (degree == 0) code.append("    private static final Tuple0 INSTANCE = new Tuple0();\n");
+        else code.append(degrees.stream().map(to("    private final T%0 v%0;\n")).collect(joining()));
         code.append("\n");
     }
     
     private void generateConstructors() {
-        code.append("    private ").append(className()).append(typedArgs()).append(" { \n");
+        code.append("    private ").append(className()).append(typedArgs()).append(" {\n");
         code.append(degrees.stream().map(to("        this.v%0 = v%0;\n")).collect(joining()));
         code.append("    }\n");
         code.append("\n");
@@ -131,7 +131,11 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     private void generateOfMethod() {
         code.append("    /** Returns a Tuple that has ").append((degree == 0) ? "no" : degree).append(" value").append((degree == 1) ? "" : "s").append(". */\n");;
         code.append("    public static ").append(genericTypes()).append((degree == 0) ? "" : " ").append(className()).append(genericTypes()).append(" of").append(typedArgs()).append(" {\n");
-        code.append("        return new ").append(className()).append((degree == 0) ? "" : "<>").append(args()).append(";\n");
+        if (degree == 0) {
+            code.append("        return INSTANCE;\n");
+        } else {
+            code.append("        return new ").append(className()).append((degree == 0) ? "" : "<>").append(args()).append(";\n");
+        }
         code.append("    }\n");
         code.append("\n");
     }
@@ -227,21 +231,16 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     }
     
     private void generateCompareToMethod() {
-        if (degree == 0) {
-            code.append("    @Override\n");
-            code.append("    public int compareTo(").append(className()).append(genericTypes()).append(" other) {\n");
-            code.append("        if (other == null) throw new NullPointerException();\n");
-            code.append("        return 0;\n");
-            code.append("    }\n");
-        } else {
-            generateCompareStaticMethod();
-            code.append("    @Override\n");
-            code.append("    public int compareTo(").append(className()).append(genericTypes()).append(" other) {\n");
+        if (degree > 0) generateCompareStaticMethod();
+        code.append("    @Override\n");
+        code.append("    public int compareTo(").append(className()).append(genericTypes()).append(" other) {\n");
+        code.append("        if (other == null) throw new NullPointerException();\n");
+        if (degree > 0) {
             code.append("        int result;\n");
             code.append(degrees.stream().map(to("        result = compare(v%0, other.v%0); if (result != 0) return result;\n")).collect(joining()));
-            code.append("        return 0;\n");
-            code.append("    }\n");
         }
+        code.append("        return 0;\n");
+        code.append("    }\n");
         code.append("\n");
     }
     
