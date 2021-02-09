@@ -122,11 +122,14 @@ public class TupleClassTestGenerator implements ClassGenerator {
     private void generateTests() {
         generateDegreeTests();
         generateOfTests();
-//        generateConcatTests();
         generateVxTests();
         generateEqualsTests();
         generateHashCodeTests();
         generateCompareToTests();
+        generateToStringTests();
+        generateMapVxTests();
+        generateAppendTests();
+        generateConcatTests();
         // TODO: Generate tests for new methods
     }
 
@@ -152,20 +155,31 @@ public class TupleClassTestGenerator implements ClassGenerator {
 
     private String stringValues(int start, int end) { return IntStream.rangeClosed(start, end).boxed().map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
 
-    private void generateConcatTests() {
+    private void generateToStringTests() {
         code.append("    @Test\n");
-        code.append("    public void concat_shouldReturnEqualTuple").append(degree).append("_whenCalledWithNoArguments() {\n");
-        code.append("        assertEquals(tuple, tuple.concat());\n");
+        code.append("    public void toString_shouldReturnCorrectValue_whenCalled() {\n");
+        code.append("        assertEquals(\"").append(
+                IntStream.rangeClosed(1, degree).boxed().map(to("v%0")).collect(joining(", ", "[", "]")))
+                .append("\", tuple.toString());\n");
         code.append("    }\n");
         code.append("\n");
-        for (int i = degree + 1; i <= maxDegree; i++) {
-            code.append("    @Test\n");
-            code.append("    public void concat_shouldReturnNonNullTuple").append(i).append("Instance_whenCalledWith").append(i - degree).append("Value").append(i - degree > 1 ? "s" : "").append("() {\n");
-            code.append("        assertEquals(Tuple").append(i).append(".of").append(stringValues(1, i)).append(", tuple.concat").append(stringValues(degree + 1, i)).append(");\n");
-            code.append("    }\n");
-            code.append("\n");
-        }
-
+    }
+    
+    private void generateAppendTests() {
+        if (degree == maxDegree) return;
+        code.append("    @Test\n");
+        code.append("    public void append_shouldReturnNonNullTuple").append(degree + 1).append("Instance_whenCalledWithArgument").append("() {\n");
+        code.append("        assertEquals(Tuple").append(degree + 1).append(".of").append(stringValues(1, degree + 1)).append(", tuple.append").append(stringValues(degree + 1, degree + 1)).append(");\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
+    private void generateConcatTests() {
+        code.append("    @Test\n");
+        code.append("    public void concat_shouldReturnEqualTuple").append(degree).append("_whenCalledWithTuple0Argument() {\n");
+        code.append("        assertEquals(tuple, tuple.concat(Tuple0.of()));\n");
+        code.append("    }\n");
+        code.append("\n");
         for (int i = degree + 1; i <= maxDegree; i++) {
             code.append("    @Test\n");
             code.append("    public void concat_shouldReturnNonNullTuple").append(i).append("Instance_whenCalledWithTuple").append(i - degree).append("Argument() {\n");
@@ -175,6 +189,22 @@ public class TupleClassTestGenerator implements ClassGenerator {
         }
     }
     
+    private void generateMapVxTests() {
+        degrees.stream().forEachOrdered(d -> {
+            code.append("    @Test\n");
+            code.append("    public void mapV").append(d).append("_shouldReturnCorrectValue_whenCalled() {\n");
+            code.append("        assertEquals(").append(testedClass()).append(".of").append(Stream.of(
+                    IntStream.range(1, d).boxed().map(to("\"v%0\"")),
+                    Stream.of("\"v" + d + "M\""),
+                    IntStream.rangeClosed(d + 1, degree).boxed().map(to("\"v%0\"")))
+                    .flatMap(s -> s)
+                    .collect(joining(", ", "(", ")")))
+                    .append(", tuple.mapV").append(d).append("(v -> v + \"M\"));\n");
+            code.append("    }\n");
+            code.append("\n");
+        });
+    }
+
     private void generateVxTests() {
         degrees.stream().forEachOrdered(d -> {
             String v = "v" + d;
@@ -232,7 +262,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
                 code.append("\n");
             }
             code.append("    }\n");
-
+            code.append("\n");
         }
     }
 

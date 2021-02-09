@@ -164,6 +164,7 @@ public class Tuple10Test {
         assertFalse(t10.equals(t));
 
     }
+
     @Test
     public void hashCode_shouldReturnTheSameValue_whenCalledWithTheSameTuple() {
         assertEquals(tuple.hashCode(), tuple.hashCode());
@@ -255,6 +256,96 @@ public class Tuple10Test {
         assertTrue(t.compareTo(t10) < 0);
         assertTrue(t10.compareTo(t) > 0);
 
+    }
+
+    @Test
+    public void toString_shouldReturnCorrectValue_whenCalled() {
+        assertEquals("[v1, v2, v3, v4, v5, v6, v7, v8, v9, v10]", tuple.toString());
+    }
+
+    @Test
+    public void mapV1_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1M", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10"), tuple.mapV1(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV2_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2M", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10"), tuple.mapV2(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV3_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3M", "v4", "v5", "v6", "v7", "v8", "v9", "v10"), tuple.mapV3(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV4_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4M", "v5", "v6", "v7", "v8", "v9", "v10"), tuple.mapV4(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV5_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4", "v5M", "v6", "v7", "v8", "v9", "v10"), tuple.mapV5(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV6_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4", "v5", "v6M", "v7", "v8", "v9", "v10"), tuple.mapV6(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV7_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4", "v5", "v6", "v7M", "v8", "v9", "v10"), tuple.mapV7(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV8_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8M", "v9", "v10"), tuple.mapV8(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV9_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9M", "v10"), tuple.mapV9(v -> v + "M"));
+    }
+
+    @Test
+    public void mapV10_shouldReturnCorrectValue_whenCalled() {
+        assertEquals(Tuple10.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10M"), tuple.mapV10(v -> v + "M"));
+    }
+
+    @Test
+    public void append_shouldReturnNonNullTuple11Instance_whenCalledWithArgument() {
+        assertEquals(Tuple11.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11"), tuple.append("v11"));
+    }
+
+    @Test
+    public void concat_shouldReturnEqualTuple10_whenCalledWithTuple0Argument() {
+        assertEquals(tuple, tuple.concat(Tuple0.of()));
+    }
+
+    @Test
+    public void concat_shouldReturnNonNullTuple11Instance_whenCalledWithTuple1Argument() {
+        assertEquals(Tuple11.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11"), tuple.concat(Tuple1.of("v11")));
+    }
+
+    @Test
+    public void concat_shouldReturnNonNullTuple12Instance_whenCalledWithTuple2Argument() {
+        assertEquals(Tuple12.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12"), tuple.concat(Tuple2.of("v11", "v12")));
+    }
+
+    @Test
+    public void concat_shouldReturnNonNullTuple13Instance_whenCalledWithTuple3Argument() {
+        assertEquals(Tuple13.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"), tuple.concat(Tuple3.of("v11", "v12", "v13")));
+    }
+
+    @Test
+    public void concat_shouldReturnNonNullTuple14Instance_whenCalledWithTuple4Argument() {
+        assertEquals(Tuple14.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14"), tuple.concat(Tuple4.of("v11", "v12", "v13", "v14")));
+    }
+
+    @Test
+    public void concat_shouldReturnNonNullTuple15Instance_whenCalledWithTuple5Argument() {
+        assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat(Tuple5.of("v11", "v12", "v13", "v14", "v15")));
     }
 
 }
