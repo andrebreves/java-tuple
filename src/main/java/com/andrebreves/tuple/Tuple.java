@@ -13,6 +13,10 @@
  */
 package com.andrebreves.tuple;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 /**
  * A Tuple that has up to 15 values.
  * @author Andre Breves
@@ -356,5 +360,245 @@ public interface Tuple {
     static <T14> T14 v14(Tuple15<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, T14, ?> tuple) { return tuple.v14(); }
     /** Returns the 15th value of the Tuple. */
     static <T15> T15 v15(Tuple15<?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, T15> tuple) { return tuple.v15(); }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static Consumer<Tuple0> consumeValues(Tuple0.ValuesConsumer consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1> Consumer<Tuple1<T1>> consumeValues(Tuple1.ValuesConsumer<T1> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2> Consumer<Tuple2<T1, T2>> consumeValues(Tuple2.ValuesConsumer<T1, T2> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3> Consumer<Tuple3<T1, T2, T3>> consumeValues(Tuple3.ValuesConsumer<T1, T2, T3> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4> Consumer<Tuple4<T1, T2, T3, T4>> consumeValues(Tuple4.ValuesConsumer<T1, T2, T3, T4> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5> Consumer<Tuple5<T1, T2, T3, T4, T5>> consumeValues(Tuple5.ValuesConsumer<T1, T2, T3, T4, T5> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6> Consumer<Tuple6<T1, T2, T3, T4, T5, T6>> consumeValues(Tuple6.ValuesConsumer<T1, T2, T3, T4, T5, T6> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7> Consumer<Tuple7<T1, T2, T3, T4, T5, T6, T7>> consumeValues(Tuple7.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8> Consumer<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> consumeValues(Tuple8.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9> Consumer<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> consumeValues(Tuple9.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Consumer<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> consumeValues(Tuple10.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Consumer<Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>> consumeValues(Tuple11.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Consumer<Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>> consumeValues(Tuple12.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> Consumer<Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>> consumeValues(Tuple13.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> Consumer<Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>> consumeValues(Tuple14.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Consumes the values of the Tuple using the giving Consumer. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> Consumer<Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>> consumeValues(Tuple15.ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> consumer) {
+        return tuple -> tuple.consumeValues(consumer);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <R> Function<Tuple0, R> mapValues(Tuple0.ValuesFunction<R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, R> Function<Tuple1<T1>, R> mapValues(Tuple1.ValuesFunction<T1, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, R> Function<Tuple2<T1, T2>, R> mapValues(Tuple2.ValuesFunction<T1, T2, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, R> Function<Tuple3<T1, T2, T3>, R> mapValues(Tuple3.ValuesFunction<T1, T2, T3, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, R> Function<Tuple4<T1, T2, T3, T4>, R> mapValues(Tuple4.ValuesFunction<T1, T2, T3, T4, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, R> Function<Tuple5<T1, T2, T3, T4, T5>, R> mapValues(Tuple5.ValuesFunction<T1, T2, T3, T4, T5, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, R> Function<Tuple6<T1, T2, T3, T4, T5, T6>, R> mapValues(Tuple6.ValuesFunction<T1, T2, T3, T4, T5, T6, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, R> Function<Tuple7<T1, T2, T3, T4, T5, T6, T7>, R> mapValues(Tuple7.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, R> Function<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>, R> mapValues(Tuple8.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> Function<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>, R> mapValues(Tuple9.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> Function<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, R> mapValues(Tuple10.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> Function<Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, R> mapValues(Tuple11.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> Function<Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, R> mapValues(Tuple12.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> Function<Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, R> mapValues(Tuple13.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> Function<Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, R> mapValues(Tuple14.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Maps the values of the Tuple using the giving Function. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> Function<Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, R> mapValues(Tuple15.ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> function) {
+        return tuple -> tuple.mapValues(function);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static Predicate<Tuple0> testValues(Tuple0.ValuesPredicate predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1> Predicate<Tuple1<T1>> testValues(Tuple1.ValuesPredicate<T1> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2> Predicate<Tuple2<T1, T2>> testValues(Tuple2.ValuesPredicate<T1, T2> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3> Predicate<Tuple3<T1, T2, T3>> testValues(Tuple3.ValuesPredicate<T1, T2, T3> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4> Predicate<Tuple4<T1, T2, T3, T4>> testValues(Tuple4.ValuesPredicate<T1, T2, T3, T4> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5> Predicate<Tuple5<T1, T2, T3, T4, T5>> testValues(Tuple5.ValuesPredicate<T1, T2, T3, T4, T5> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6> Predicate<Tuple6<T1, T2, T3, T4, T5, T6>> testValues(Tuple6.ValuesPredicate<T1, T2, T3, T4, T5, T6> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7> Predicate<Tuple7<T1, T2, T3, T4, T5, T6, T7>> testValues(Tuple7.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8> Predicate<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>> testValues(Tuple8.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9> Predicate<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> testValues(Tuple9.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Predicate<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> testValues(Tuple10.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> Predicate<Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>> testValues(Tuple11.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> Predicate<Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>> testValues(Tuple12.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> Predicate<Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>> testValues(Tuple13.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> Predicate<Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>> testValues(Tuple14.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
+
+    /** Test the values of the Tuple using the giving Predicate. */
+    static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> Predicate<Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>> testValues(Tuple15.ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> predicate) {
+        return tuple -> tuple.testValues(predicate);
+    }
 
 }

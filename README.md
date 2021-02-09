@@ -1,25 +1,27 @@
 # java-tuple
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.andrebreves/java-tuple/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.andrebreves/java-tuple)
 
 Yet another Tuple library for Java 8 and up.
 
-Maven
-=====
+# Maven
+
 Add to ```pom.xml```:
+
 ```xml
 <dependencies>
     <dependency>
         <groupId>com.andrebreves</groupId>
         <artifactId>java-tuple</artifactId>
-        <version>1.2.0</version>
+        <version>2.0.0-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
 
-Usage
-=====
+# Usage
 
 Java 8:
+
 ```java
 Tuple2<String, String> tuple = Tuple.of("v01", "v02");
 System.out.println(tuple.v1()); // "v01"
@@ -42,6 +44,7 @@ tuples.stream()
 ```
 
 Java 10 and up:
+
 ```java
 var tuple = Tuple.of("v01", "v02");
 System.out.println(tuple.v1()); // "v01"

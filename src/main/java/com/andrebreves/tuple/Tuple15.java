@@ -14,6 +14,7 @@
 package com.andrebreves.tuple;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A Tuple that has 15 values.
@@ -58,11 +59,6 @@ public final class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
     /** Returns a Tuple that has 15 values. */
     public static <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> of(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15) {
         return new Tuple15<>(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat() {
-        return this;
     }
 
     /** Returns the 1st value of this Tuple. */
@@ -127,6 +123,27 @@ public final class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
             && Objects.equals(v15, other.v15);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder().append('[');
+        sb.append(v1).append(',').append(' ');
+        sb.append(v2).append(',').append(' ');
+        sb.append(v3).append(',').append(' ');
+        sb.append(v4).append(',').append(' ');
+        sb.append(v5).append(',').append(' ');
+        sb.append(v6).append(',').append(' ');
+        sb.append(v7).append(',').append(' ');
+        sb.append(v8).append(',').append(' ');
+        sb.append(v9).append(',').append(' ');
+        sb.append(v10).append(',').append(' ');
+        sb.append(v11).append(',').append(' ');
+        sb.append(v12).append(',').append(' ');
+        sb.append(v13).append(',').append(' ');
+        sb.append(v14).append(',').append(' ');
+        sb.append(v15);
+        return sb.append(']').toString();
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> int compare(T t1, T t2) {
         if (t1 == t2) return 0;
@@ -155,6 +172,116 @@ public final class Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T1
         result = compare(v14, other.v14); if (result != 0) return result;
         result = compare(v15, other.v15); if (result != 0) return result;
         return 0;
+    }
+
+    /** Returns a Tuple mapping the 1st value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<R, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> mapV1(Function<T1, R> mapper) {
+        return Tuple15.of(mapper.apply(v1), v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 2nd value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, R, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> mapV2(Function<T2, R> mapper) {
+        return Tuple15.of(v1, mapper.apply(v2), v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 3rd value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, R, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> mapV3(Function<T3, R> mapper) {
+        return Tuple15.of(v1, v2, mapper.apply(v3), v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 4th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, R, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> mapV4(Function<T4, R> mapper) {
+        return Tuple15.of(v1, v2, v3, mapper.apply(v4), v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 5th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, R, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> mapV5(Function<T5, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, mapper.apply(v5), v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 6th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, R, T7, T8, T9, T10, T11, T12, T13, T14, T15> mapV6(Function<T6, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, mapper.apply(v6), v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 7th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, R, T8, T9, T10, T11, T12, T13, T14, T15> mapV7(Function<T7, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, mapper.apply(v7), v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 8th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, R, T9, T10, T11, T12, T13, T14, T15> mapV8(Function<T8, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, mapper.apply(v8), v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 9th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, R, T10, T11, T12, T13, T14, T15> mapV9(Function<T9, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, mapper.apply(v9), v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 10th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, R, T11, T12, T13, T14, T15> mapV10(Function<T10, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, mapper.apply(v10), v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 11th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R, T12, T13, T14, T15> mapV11(Function<T11, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, mapper.apply(v11), v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 12th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R, T13, T14, T15> mapV12(Function<T12, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, mapper.apply(v12), v13, v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 13th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R, T14, T15> mapV13(Function<T13, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, mapper.apply(v13), v14, v15);
+    }
+
+    /** Returns a Tuple mapping the 14th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R, T15> mapV14(Function<T14, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, mapper.apply(v14), v15);
+    }
+
+    /** Returns a Tuple mapping the 15th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> mapV15(Function<T15, R> mapper) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, mapper.apply(v15));
+    }
+
+    @FunctionalInterface
+    public interface ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> {
+        void accept(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15);
+    }
+
+    /** Consumes the values of this Tuple using the giving Consumer. */
+    public void consumeValues(ValuesConsumer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> consumer) {
+        consumer.accept(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    @FunctionalInterface
+    public interface ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> {
+        R apply(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15);
+    }
+
+    /** Maps the values of this Tuple using the giving Function. */
+    public <R> R mapValues(ValuesFunction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> function) {
+        return function.apply(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    @FunctionalInterface
+    public interface ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> {
+        boolean test(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7, T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15);
+    }
+
+    /** Test the values of this Tuple using the giving Predicate. */
+    public boolean testValues(ValuesPredicate<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> predicate) {
+        return predicate.test(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat(Tuple0 t) {
+        return this;
     }
 
 }

@@ -88,6 +88,7 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     private void generateTests() {
         generateOfTests();
         generateVxTests();
+        // TODO: Generate tests for new methods
     }
 
     private void generateOfTests() {

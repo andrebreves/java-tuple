@@ -14,6 +14,7 @@
 package com.andrebreves.tuple;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A Tuple that has 7 values.
@@ -42,91 +43,6 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> implements Tuple, Comparab
     /** Returns a Tuple that has 7 values. */
     public static <T1, T2, T3, T4, T5, T6, T7> Tuple7<T1, T2, T3, T4, T5, T6, T7> of(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7) {
         return new Tuple7<>(v1, v2, v3, v4, v5, v6, v7);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public Tuple7<T1, T2, T3, T4, T5, T6, T7> concat() {
-        return this;
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8> Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> concat(T8 v8) {
-        return Tuple8.of(v1, v2, v3, v4, v5, v6, v7, v8);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9> Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> concat(T8 v8, T9 v9) {
-        return Tuple9.of(v1, v2, v3, v4, v5, v6, v7, v8, v9);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9, T10> Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> concat(T8 v8, T9 v9, T10 v10) {
-        return Tuple10.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9, T10, T11> Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> concat(T8 v8, T9 v9, T10 v10, T11 v11) {
-        return Tuple11.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9, T10, T11, T12> Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> concat(T8 v8, T9 v9, T10 v10, T11 v11, T12 v12) {
-        return Tuple12.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9, T10, T11, T12, T13> Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> concat(T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13) {
-        return Tuple13.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9, T10, T11, T12, T13, T14> Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> concat(T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14) {
-        return Tuple14.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
-    public <T8, T9, T10, T11, T12, T13, T14, T15> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat(T8 v8, T9 v9, T10 v10, T11 v11, T12 v12, T13 v13, T14 v14, T15 v15) {
-        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15);
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8> Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> concat(Tuple1<T8> t) {
-        return Tuple8.of(v1, v2, v3, v4, v5, v6, v7, t.v1());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9> Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> concat(Tuple2<T8, T9> t) {
-        return Tuple9.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9, T10> Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> concat(Tuple3<T8, T9, T10> t) {
-        return Tuple10.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9, T10, T11> Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> concat(Tuple4<T8, T9, T10, T11> t) {
-        return Tuple11.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9, T10, T11, T12> Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> concat(Tuple5<T8, T9, T10, T11, T12> t) {
-        return Tuple12.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9, T10, T11, T12, T13> Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> concat(Tuple6<T8, T9, T10, T11, T12, T13> t) {
-        return Tuple13.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5(), t.v6());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9, T10, T11, T12, T13, T14> Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> concat(Tuple7<T8, T9, T10, T11, T12, T13, T14> t) {
-        return Tuple14.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5(), t.v6(), t.v7());
-    }
-
-    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
-    public <T8, T9, T10, T11, T12, T13, T14, T15> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat(Tuple8<T8, T9, T10, T11, T12, T13, T14, T15> t) {
-        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5(), t.v6(), t.v7(), t.v8());
     }
 
     /** Returns the 1st value of this Tuple. */
@@ -167,6 +83,19 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> implements Tuple, Comparab
             && Objects.equals(v7, other.v7);
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder().append('[');
+        sb.append(v1).append(',').append(' ');
+        sb.append(v2).append(',').append(' ');
+        sb.append(v3).append(',').append(' ');
+        sb.append(v4).append(',').append(' ');
+        sb.append(v5).append(',').append(' ');
+        sb.append(v6).append(',').append(' ');
+        sb.append(v7);
+        return sb.append(']').toString();
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> int compare(T t1, T t2) {
         if (t1 == t2) return 0;
@@ -187,6 +116,121 @@ public final class Tuple7<T1, T2, T3, T4, T5, T6, T7> implements Tuple, Comparab
         result = compare(v6, other.v6); if (result != 0) return result;
         result = compare(v7, other.v7); if (result != 0) return result;
         return 0;
+    }
+
+    /** Returns a Tuple mapping the 1st value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<R, T2, T3, T4, T5, T6, T7> mapV1(Function<T1, R> mapper) {
+        return Tuple7.of(mapper.apply(v1), v2, v3, v4, v5, v6, v7);
+    }
+
+    /** Returns a Tuple mapping the 2nd value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<T1, R, T3, T4, T5, T6, T7> mapV2(Function<T2, R> mapper) {
+        return Tuple7.of(v1, mapper.apply(v2), v3, v4, v5, v6, v7);
+    }
+
+    /** Returns a Tuple mapping the 3rd value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<T1, T2, R, T4, T5, T6, T7> mapV3(Function<T3, R> mapper) {
+        return Tuple7.of(v1, v2, mapper.apply(v3), v4, v5, v6, v7);
+    }
+
+    /** Returns a Tuple mapping the 4th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<T1, T2, T3, R, T5, T6, T7> mapV4(Function<T4, R> mapper) {
+        return Tuple7.of(v1, v2, v3, mapper.apply(v4), v5, v6, v7);
+    }
+
+    /** Returns a Tuple mapping the 5th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<T1, T2, T3, T4, R, T6, T7> mapV5(Function<T5, R> mapper) {
+        return Tuple7.of(v1, v2, v3, v4, mapper.apply(v5), v6, v7);
+    }
+
+    /** Returns a Tuple mapping the 6th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<T1, T2, T3, T4, T5, R, T7> mapV6(Function<T6, R> mapper) {
+        return Tuple7.of(v1, v2, v3, v4, v5, mapper.apply(v6), v7);
+    }
+
+    /** Returns a Tuple mapping the 7th value using the giving mapper function, and keeping the remaining values unchanged. */
+    public <R> Tuple7<T1, T2, T3, T4, T5, T6, R> mapV7(Function<T7, R> mapper) {
+        return Tuple7.of(v1, v2, v3, v4, v5, v6, mapper.apply(v7));
+    }
+
+    @FunctionalInterface
+    public interface ValuesConsumer<T1, T2, T3, T4, T5, T6, T7> {
+        void accept(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7);
+    }
+
+    /** Consumes the values of this Tuple using the giving Consumer. */
+    public void consumeValues(ValuesConsumer<T1, T2, T3, T4, T5, T6, T7> consumer) {
+        consumer.accept(v1, v2, v3, v4, v5, v6, v7);
+    }
+
+    @FunctionalInterface
+    public interface ValuesFunction<T1, T2, T3, T4, T5, T6, T7, R> {
+        R apply(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7);
+    }
+
+    /** Maps the values of this Tuple using the giving Function. */
+    public <R> R mapValues(ValuesFunction<T1, T2, T3, T4, T5, T6, T7, R> function) {
+        return function.apply(v1, v2, v3, v4, v5, v6, v7);
+    }
+
+    @FunctionalInterface
+    public interface ValuesPredicate<T1, T2, T3, T4, T5, T6, T7> {
+        boolean test(T1 v1, T2 v2, T3 v3, T4 v4, T5 v5, T6 v6, T7 v7);
+    }
+
+    /** Test the values of this Tuple using the giving Predicate. */
+    public boolean testValues(ValuesPredicate<T1, T2, T3, T4, T5, T6, T7> predicate) {
+        return predicate.test(v1, v2, v3, v4, v5, v6, v7);
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */
+    public <T8> Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> append(T8 v8) {
+        return Tuple8.of(v1, v2, v3, v4, v5, v6, v7, v8);
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public Tuple7<T1, T2, T3, T4, T5, T6, T7> concat(Tuple0 t) {
+        return this;
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8> Tuple8<T1, T2, T3, T4, T5, T6, T7, T8> concat(Tuple1<T8> t) {
+        return Tuple8.of(v1, v2, v3, v4, v5, v6, v7, t.v1());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9> Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9> concat(Tuple2<T8, T9> t) {
+        return Tuple9.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9, T10> Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> concat(Tuple3<T8, T9, T10> t) {
+        return Tuple10.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9, T10, T11> Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> concat(Tuple4<T8, T9, T10, T11> t) {
+        return Tuple11.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9, T10, T11, T12> Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> concat(Tuple5<T8, T9, T10, T11, T12> t) {
+        return Tuple12.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9, T10, T11, T12, T13> Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> concat(Tuple6<T8, T9, T10, T11, T12, T13> t) {
+        return Tuple13.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5(), t.v6());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9, T10, T11, T12, T13, T14> Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> concat(Tuple7<T8, T9, T10, T11, T12, T13, T14> t) {
+        return Tuple14.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5(), t.v6(), t.v7());
+    }
+
+    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */
+    public <T8, T9, T10, T11, T12, T13, T14, T15> Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> concat(Tuple8<T8, T9, T10, T11, T12, T13, T14, T15> t) {
+        return Tuple15.of(v1, v2, v3, v4, v5, v6, v7, t.v1(), t.v2(), t.v3(), t.v4(), t.v5(), t.v6(), t.v7(), t.v8());
     }
 
 }

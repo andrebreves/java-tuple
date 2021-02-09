@@ -13,11 +13,14 @@
  */
 package com.andrebreves.tuple;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Generates a Tuple class of a specific degree.
@@ -52,6 +55,32 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         return t -> String.format(format.replaceAll("%0", t.toString()), args);
     }
 
+    private static Stream<Integer> range(int start, int end) {
+        return IntStream.range(start, end).boxed();
+    }
+
+    private static Stream<Integer> rangeClosed(int start, int end) {
+        return IntStream.rangeClosed(start, end).boxed();
+    }
+    
+    private static List<?> concat(Collection<?>... lists) {
+        return Arrays.stream(lists).flatMap(Collection::stream).collect(toList());
+    }
+    
+    private static <T> Stream<T> concat(Stream<T>... streams) {
+        return Stream.of(streams).flatMap(Function.identity());
+    }
+
+    private static <T> CharSequence format(List<T> list, Function<? super T, ? extends CharSequence> mapper, CharSequence delimiter) {
+        if (list.isEmpty()) return "";
+        else return list.stream().map(mapper).collect(joining(delimiter));
+    }
+
+    private static <T> CharSequence format(List<T> list, Function<? super T, ? extends CharSequence> mapper, CharSequence delimiter, CharSequence prefix, CharSequence suffix) {
+        if (list.isEmpty()) return "";
+        else return list.stream().map(mapper).collect(joining(delimiter, prefix, suffix));
+    }
+    
     private static String ordinal(int cardinal) {
         switch (cardinal) {
             case 1 : return cardinal + "st";
@@ -88,6 +117,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     private void generateImports() {
         if (degree == 0) return;
         code.append("import java.util.Objects;\n");
+        code.append("import java.util.function.Function;\n");
         code.append("\n");
     }
     
@@ -120,12 +150,18 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     
     private void generateMethods() {
         generateOfMethod();
-        generateConcatMethods();
         generateGetters();
         generateDegreeMethod();
         generateHashCodeMethod();
         generateEqualsMethod();
+        generateToStringMethod();
         generateCompareToMethod();
+        generateMapMethods();
+        generateConsumeValuesMethod();
+        generateMapValuesMethod();
+        generateTestValuesMethod();
+        generateAppendMethod();
+        generateConcatMethods();
     }
     
     private void generateOfMethod() {
@@ -140,40 +176,6 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         code.append("\n");
     }
     
-    private void generateConcatMethods() {
-        IntStream.rangeClosed(degree, maxDegree).forEachOrdered(i -> generateConcatValuesMethod(i));
-        IntStream.rangeClosed(degree + 1, maxDegree).forEachOrdered(i -> generateConcatTupleMethod(i));
-    }
-    
-    private static List<Integer> range(int start, int end) { return IntStream.rangeClosed(start, end).boxed().collect(toList()); }
-    
-    private static <T> CharSequence format(List<T> list, Function<? super T,? extends CharSequence> mapper, CharSequence delimiter, CharSequence prefix, CharSequence suffix) {
-        if (list.isEmpty()) return "";
-        else return list.stream().map(mapper).collect(joining(delimiter, prefix, suffix));
-    }
-    
-    private void generateConcatValuesMethod(int lastDegree) {
-        code.append("    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */\n");
-        code.append("    public ").append(format(range(degree + 1, lastDegree), to("T%0"), ", ", "<", "> ")).append("Tuple").append(lastDegree).append(format(range(1, lastDegree), to("T%0"), ", ", "<", ">"));
-        code.append(" concat").append(range(degree + 1, lastDegree).stream().map(to("T%0 v%0")).collect(joining(", ", "(", ")"))).append(" {\n");
-        if (lastDegree == degree) code.append("        return this;\n");
-        else code.append("        return Tuple").append(lastDegree).append(".of").append(range(1, lastDegree).stream().map(to("v%0")).collect(joining(", ", "(", ")"))).append(";\n");
-        code.append("    }\n");
-        code.append("\n");
-    }
-
-    private void generateConcatTupleMethod(int lastDegree) {
-        code.append("    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */\n");
-        code.append("    public ").append(format(range(degree + 1, lastDegree), to("T%0"), ", ", "<", "> ")).append("Tuple").append(lastDegree).append(format(range(1, lastDegree), to("T%0"), ", ", "<", ">"));
-        code.append(" concat(Tuple").append(lastDegree - degree).append(range(degree + 1, lastDegree).stream().map(to("T%0")).collect(joining(", ", "<", ">"))).append(" t) {\n");
-        code.append("        return Tuple").append(lastDegree).append(".of(");
-        code.append(format(range(1, degree), to("v%0"), ", ", "", ", "));
-        code.append(format(range(1, lastDegree - degree), to("t.v%0()"), ", ", "", ""));
-        code.append(");\n");
-        code.append("    }\n");
-        code.append("\n");
-    }
-
     private void generateGetters() {
         if (degree == 0) return;
         degrees.stream().forEachOrdered(this::generateGetter);
@@ -219,6 +221,22 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         code.append("\n");
     }
     
+    private void generateToStringMethod() {
+        code.append("    @Override\n");
+        code.append("    public String toString() {\n");
+        if (degree == 0) {
+            code.append("        return \"[]\";\n");
+        } else {
+            code.append("        StringBuilder sb = new StringBuilder().append('[');\n");
+            code.append(degrees.stream()
+                    .map(to("        sb.append(v%0)"))
+                    .collect(joining(".append(',').append(' ');\n", "", ";\n")));
+            code.append("        return sb.append(']').toString();\n");
+        }
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
     private void generateCompareStaticMethod() {
         code.append("    @SuppressWarnings(\"unchecked\")\n");
         code.append("    private static <T> int compare(T t1, T t2) {\n");
@@ -244,4 +262,110 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         code.append("\n");
     }
     
+    private void generateMapMethods() {
+        degrees.forEach(v -> generateMapMethod(v));
+    }
+    
+    private void generateMapMethod(int v) {
+        code.append("    /** Returns a Tuple mapping the ").append(ordinal(v)).append(" value using the giving mapper function, and keeping the remaining values unchanged. */\n");
+        code.append("    public <R> ")
+                .append(className())
+                .append(concat(
+                        range(1, v).map(to("T%0")), 
+                        Stream.of("R"), 
+                        rangeClosed(v + 1, degree).map(to("T%0")))
+                        .collect(joining(", ", "<", "> ")))
+                .append("mapV").append(v).append("(Function<T").append(v).append(", R> mapper) {\n");
+        code.append("        return ").append(className()).append(".of(")
+                .append(concat(
+                        range(1, v).map(to("v%0")), 
+                        Stream.of("mapper.apply(v" + v + ")"), 
+                        rangeClosed(v + 1, degree).map(to("v%0")))
+                        .collect(joining(", ")))
+                .append(");\n");
+        code.append("    }\n");        
+        code.append("\n");
+    }
+
+    private void generateConsumeValuesMethod() {
+        // TODO: Javadoc
+        code.append("    @FunctionalInterface\n");
+        code.append("    public interface ValuesConsumer").append(genericTypes()).append(" {\n");
+        code.append("        void accept").append(typedArgs()).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+        code.append("    /** Consumes the values of this Tuple using the giving Consumer. */\n");
+        code.append("    public void consumeValues(ValuesConsumer").append(genericTypes()).append(" consumer) {\n");
+        code.append("        consumer.accept").append(args()).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
+    private void generateMapValuesMethod() {
+        // TODO: Javadoc
+        code.append("    @FunctionalInterface\n");
+        code.append("    public interface ValuesFunction<")
+                .append(degree > 0 ? degrees.stream().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append("R> {\n");
+        code.append("        R apply").append(typedArgs()).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+        code.append("    /** Maps the values of this Tuple using the giving Function. */\n");
+        code.append("    public <R> R mapValues(ValuesFunction<")
+                .append(degree > 0 ? degrees.stream().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append("R> function) {\n");
+        code.append("        return function.apply").append(args()).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+        
+    private void generateTestValuesMethod() {
+        // TODO: Javadoc
+        code.append("    @FunctionalInterface\n");
+        code.append("    public interface ValuesPredicate").append(genericTypes()).append(" {\n");
+        code.append("        boolean test").append(typedArgs()).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+        code.append("    /** Test the values of this Tuple using the giving Predicate. */\n");
+        code.append("    public boolean testValues(ValuesPredicate").append(genericTypes()).append(" predicate) {\n");
+        code.append("        return predicate.test").append(args()).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
+    private void generateAppendMethod() {
+        if (degree == maxDegree) return;
+        int nextDegree = degree + 1;
+        code.append("    /** Returns a Tuple containing the values of this Tuple and the values passed as parameters. */\n");
+        code.append("    public ")
+                .append(rangeClosed(degree + 1, nextDegree).map(to("T%0")).collect(joining(", ", "<", "> ")))
+                .append("Tuple").append(nextDegree)
+                .append(rangeClosed(1, nextDegree).map(to("T%0")).collect(joining(", ", "<", ">")));
+        code.append(" append").append(rangeClosed(degree + 1, nextDegree).map(to("T%0 v%0")).collect(joining(", ", "(", ")"))).append(" {\n");
+        code.append("        return Tuple").append(nextDegree).append(".of").append(rangeClosed(1, nextDegree).map(to("v%0")).collect(joining(", ", "(", ")"))).append(";\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+
+    private void generateConcatMethods() {
+        IntStream.rangeClosed(degree, maxDegree).forEachOrdered(i -> generateConcatMethod(i));
+    }
+
+    private void generateConcatMethod(int lastDegree) {
+        code.append("    /** Returns a Tuple containing the values of this Tuple and the values of the Tuple passed as parameter. */\n");
+        code.append("    public ")
+                .append(lastDegree <= degree ? "" : rangeClosed(degree + 1, lastDegree).map(to("T%0")).collect(joining(", ", "<", "> ")))
+                .append("Tuple").append(lastDegree)
+                .append(lastDegree == 0 ? "" : rangeClosed(1, lastDegree).map(to("T%0")).collect(joining(", ", "<", ">")));
+        code.append(" concat(Tuple").append(lastDegree - degree)
+                .append(lastDegree == degree ? "" : rangeClosed(degree + 1, lastDegree).map(to("T%0")).collect(joining(", ", "<", ">"))).append(" t) {\n");
+        if (lastDegree == degree) code.append("        return this;\n");
+        else code.append("        return Tuple").append(lastDegree).append(".of(")
+                .append(degree == 0 ? "" : rangeClosed(1, degree).map(to("v%0")).collect(joining(", ", "", ", ")))
+                .append(rangeClosed(1, lastDegree - degree).map(to("t.v%0()")).collect(joining(", ", "", "")))
+                .append(");\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+
 }

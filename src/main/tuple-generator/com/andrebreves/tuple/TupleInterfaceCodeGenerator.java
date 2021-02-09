@@ -97,6 +97,10 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     }
     
     private void generateImports() {
+        code.append("import java.util.function.Consumer;\n");
+        code.append("import java.util.function.Function;\n");
+        code.append("import java.util.function.Predicate;\n");
+        code.append("\n");
     }
 
     private void generateInterface() {
@@ -121,6 +125,9 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     private void generateStaticMethods() {
         IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateOfMethod(i));
         IntStream.rangeClosed(1, maxDegree).boxed().forEachOrdered(i -> generateVMethods(i));
+        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateConsumeValuesMethod(i));
+        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateMapValuesMethod(i));
+        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateTestValuesMethod(i));
     }
     
     private void generateOfMethod(int degree) {
@@ -141,6 +148,59 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
         code.append("    static <T").append(v).append("> T").append(v).append(" v").append(v).append("(").append(className(degree)).append(genericTypes(degree, v)).append(" tuple) { ");
         code.append("return tuple.v").append(v).append("(); ");
         code.append("}\n");
+    }
+    
+    private void generateConsumeValuesMethod(int degree) {
+        code.append("    /** Consumes the values of the Tuple using the giving Consumer. */\n");
+        code.append("    static ")
+                .append(genericTypes(degree))
+                .append(degree == 0 ? "" : " ")
+                .append("Consumer<")
+                .append(className(degree))
+                .append(genericTypes(degree))
+                .append("> consumeValues(")
+                .append(className(degree))
+                .append(".ValuesConsumer")
+                .append(genericTypes(degree))
+                .append(" consumer) {\n");
+        code.append("        return tuple -> tuple.consumeValues(consumer);\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
+    private void generateMapValuesMethod(int degree) {
+        code.append("    /** Maps the values of the Tuple using the giving Function. */\n");
+        code.append("    static <")
+                .append(degree > 0 ? IntStream.rangeClosed(1, degree).boxed().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append("R> Function<")
+                .append(className(degree))
+                .append(genericTypes(degree))
+                .append(", R> mapValues(")
+                .append(className(degree))
+                .append(".ValuesFunction<")
+                .append(degree > 0 ? IntStream.rangeClosed(1, degree).boxed().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append("R> function) {\n");
+        code.append("        return tuple -> tuple.mapValues(function);\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+
+    private void generateTestValuesMethod(int degree) {
+        code.append("    /** Test the values of the Tuple using the giving Predicate. */\n");
+        code.append("    static ")
+                .append(genericTypes(degree))
+                .append(degree == 0 ? "" : " ")
+                .append("Predicate<")
+                .append(className(degree))
+                .append(genericTypes(degree))
+                .append("> testValues(")
+                .append(className(degree))
+                .append(".ValuesPredicate")
+                .append(genericTypes(degree))
+                .append(" predicate) {\n");
+        code.append("        return tuple -> tuple.testValues(predicate);\n");
+        code.append("    }\n");
+        code.append("\n");
     }
     
 }

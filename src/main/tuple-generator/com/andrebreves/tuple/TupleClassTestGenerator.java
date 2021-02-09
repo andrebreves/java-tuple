@@ -127,6 +127,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
         generateEqualsTests();
         generateHashCodeTests();
         generateCompareToTests();
+        // TODO: Generate tests for new methods
     }
 
     private void generateOfTests() {
