@@ -46,41 +46,6 @@ public class Tuple12Test {
     }
 
     @Test
-    public void concat_shouldReturnEqualTuple12_whenCalledWithNoArguments() {
-        assertEquals(tuple, tuple.concat());
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple13Instance_whenCalledWith1Value() {
-        assertEquals(Tuple13.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"), tuple.concat("v13"));
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple14Instance_whenCalledWith2Values() {
-        assertEquals(Tuple14.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14"), tuple.concat("v13", "v14"));
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple15Instance_whenCalledWith3Values() {
-        assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat("v13", "v14", "v15"));
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple13Instance_whenCalledWithTuple1Argument() {
-        assertEquals(Tuple13.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13"), tuple.concat(Tuple1.of("v13")));
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple14Instance_whenCalledWithTuple2Argument() {
-        assertEquals(Tuple14.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14"), tuple.concat(Tuple2.of("v13", "v14")));
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple15Instance_whenCalledWithTuple3Argument() {
-        assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat(Tuple3.of("v13", "v14", "v15")));
-    }
-
-    @Test
     public void v1_shouldReturnCorrectValue_whenCalled() {
         assertEquals("v1", tuple.v1());
     }

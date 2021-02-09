@@ -46,11 +46,6 @@ public class Tuple15Test {
     }
 
     @Test
-    public void concat_shouldReturnEqualTuple15_whenCalledWithNoArguments() {
-        assertEquals(tuple, tuple.concat());
-    }
-
-    @Test
     public void v1_shouldReturnCorrectValue_whenCalled() {
         assertEquals("v1", tuple.v1());
     }

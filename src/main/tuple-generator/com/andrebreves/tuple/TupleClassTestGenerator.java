@@ -122,7 +122,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
     private void generateTests() {
         generateDegreeTests();
         generateOfTests();
-        generateConcatTests();
+//        generateConcatTests();
         generateVxTests();
         generateEqualsTests();
         generateHashCodeTests();

@@ -46,21 +46,6 @@ public class Tuple14Test {
     }
 
     @Test
-    public void concat_shouldReturnEqualTuple14_whenCalledWithNoArguments() {
-        assertEquals(tuple, tuple.concat());
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple15Instance_whenCalledWith1Value() {
-        assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat("v15"));
-    }
-
-    @Test
-    public void concat_shouldReturnNonNullTuple15Instance_whenCalledWithTuple1Argument() {
-        assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat(Tuple1.of("v15")));
-    }
-
-    @Test
     public void v1_shouldReturnCorrectValue_whenCalled() {
         assertEquals("v1", tuple.v1());
     }
