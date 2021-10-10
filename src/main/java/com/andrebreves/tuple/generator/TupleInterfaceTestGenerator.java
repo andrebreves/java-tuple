@@ -11,11 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.andrebreves.tuple;
+package com.andrebreves.tuple.generator;
 
 import java.util.function.Function;
 import static java.util.stream.Collectors.joining;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Generates unit tests for the Tuple interface.
@@ -59,7 +60,15 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     private String fullStringValues(int degree) {
         return IntStream.rangeClosed(1, degree).boxed().map(to("\"t%d.v%0\"", degree)).collect(joining(", ", "(", ")"));
     }
+    
+    private String args(int degree) {
+        return IntStream.rangeClosed(1, degree).boxed().map(to("v%0")).collect(joining(", ", "(", ")"));
+    }
 
+    private Stream<Integer> degrees(int degree) {
+        return IntStream.rangeClosed(1, degree).boxed();
+    }
+    
     private void generateSourceCode() {
         code.append(license());
         generatePackage();
@@ -88,9 +97,49 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     private void generateTests() {
         generateOfTests();
         generateVxTests();
-        // TODO: Generate tests for new methods
+        generateTestValuesTests();
+        generateMapValuesTests();
+        generateConsumeValuesTests();
     }
 
+    private void generateTestValuesTests() {
+        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+            code.append("    @Test\n");
+            code.append("    public void testValues_shouldReturnCorrectValue_whenCalledWithValuesPredicateOfTuple").append(degree).append("() {\n");
+            code.append("        assertTrue(Tuple.testValues(").append(args(degree)).append(" -> true")
+                    .append(degrees(degree).map(to(" && \"v%0\".equals(v%0)")).collect(joining()))
+                    .append(").test(Tuple.of").append(stringValues(degree)).append("));\n");
+            code.append("    }\n");
+            code.append("\n");
+        });
+    }
+    
+    private void generateMapValuesTests() {
+        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+            code.append("    @Test\n");
+            code.append("    public void mapValues_shouldReturnCorrectValue_whenCalledWithValuesFunctionOfTuple").append(degree).append("() {\n");
+            code.append("        assertEquals(\"test").append(degrees(degree).map(to("v%0")).collect(joining())).append("\", Tuple.mapValues(")
+                    .append(args(degree)).append(" -> \"test\"")
+                    .append(degrees(degree).map(to(" + v%0")).collect(joining()))
+                    .append(").apply(Tuple.of").append(stringValues(degree)).append("));\n");
+            code.append("    }\n");
+            code.append("\n");
+        });
+    }
+    
+    private void generateConsumeValuesTests() {
+        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+            code.append("    @Test\n");
+            code.append("    public void consumeValues_shouldHaveCorrectBehavior_whenCalledWithValuesConsumerOfTuple").append(degree).append("() {\n");
+            code.append("        final StringBuilder s = new StringBuilder();\n");
+            code.append("        Tuple.consumeValues(").append(args(degree)).append(" -> s.append(\"test\")").append(degrees(degree).map(to(".append(v%0)")).collect(joining()))
+                    .append(").accept(Tuple.of").append(stringValues(degree)).append(");\n");
+            code.append("        assertEquals(s.toString(), \"test").append(degrees(degree).map(to("v%0")).collect(joining())).append("\");\n");
+            code.append("    }\n");
+            code.append("\n");
+        });
+    }
+    
     private void generateOfTests() {
         IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
             code.append("    @Test\n");
@@ -109,7 +158,6 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
         IntStream.rangeClosed(1, degree).boxed().forEachOrdered(value -> {
             code.append("    @Test\n");
             code.append("    public void v").append(value).append("_shouldReturnCorrectValue_whenCalledWithTuple").append(degree).append("() {\n");
-            code.append("        assertEquals(\"v").append(value).append("\", Tuple.of").append(stringValues(degree)).append(".v").append(value).append("());\n");
             code.append("        assertEquals(\"v").append(value).append("\", Tuple.v").append(value).append("(Tuple.of").append(stringValues(degree)).append("));\n");
             code.append("    }\n");
             code.append("\n");

@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.andrebreves.tuple;
+package com.andrebreves.tuple.generator;
 
 import java.util.function.Function;
 import static java.util.stream.Collectors.joining;

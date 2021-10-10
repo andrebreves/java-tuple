@@ -11,10 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.andrebreves.tuple;
+package com.andrebreves.tuple.generator;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import static java.util.stream.Collectors.joining;
@@ -63,24 +61,6 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         return IntStream.rangeClosed(start, end).boxed();
     }
     
-    private static List<?> concat(Collection<?>... lists) {
-        return Arrays.stream(lists).flatMap(Collection::stream).collect(toList());
-    }
-    
-    private static <T> Stream<T> concat(Stream<T>... streams) {
-        return Stream.of(streams).flatMap(Function.identity());
-    }
-
-    private static <T> CharSequence format(List<T> list, Function<? super T, ? extends CharSequence> mapper, CharSequence delimiter) {
-        if (list.isEmpty()) return "";
-        else return list.stream().map(mapper).collect(joining(delimiter));
-    }
-
-    private static <T> CharSequence format(List<T> list, Function<? super T, ? extends CharSequence> mapper, CharSequence delimiter, CharSequence prefix, CharSequence suffix) {
-        if (list.isEmpty()) return "";
-        else return list.stream().map(mapper).collect(joining(delimiter, prefix, suffix));
-    }
-    
     private static String ordinal(int cardinal) {
         switch (cardinal) {
             case 1 : return cardinal + "st";
@@ -98,6 +78,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     private String args() {
         return degrees.stream().map(to("v%0")).collect(joining(", ", "(", ")"));
     }
+
     private String typedArgs() {
         return degrees.stream().map(to("T%0 v%0")).collect(joining(", ", "(", ")"));
     }
@@ -270,17 +251,13 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         code.append("    /** Returns a Tuple mapping the ").append(ordinal(v)).append(" value using the giving mapper function, and keeping the remaining values unchanged. */\n");
         code.append("    public <R> ")
                 .append(className())
-                .append(concat(
-                        range(1, v).map(to("T%0")), 
-                        Stream.of("R"), 
-                        rangeClosed(v + 1, degree).map(to("T%0")))
+                .append(Stream.of(range(1, v).map(to("T%0")), Stream.of("R"), rangeClosed(v + 1, degree).map(to("T%0")))
+                        .flatMap(s -> s)
                         .collect(joining(", ", "<", "> ")))
                 .append("mapV").append(v).append("(Function<T").append(v).append(", R> mapper) {\n");
         code.append("        return ").append(className()).append(".of(")
-                .append(concat(
-                        range(1, v).map(to("v%0")), 
-                        Stream.of("mapper.apply(v" + v + ")"), 
-                        rangeClosed(v + 1, degree).map(to("v%0")))
+                .append(Stream.of(range(1, v).map(to("v%0")), Stream.of("mapper.apply(v" + v + ")"), rangeClosed(v + 1, degree).map(to("v%0")))
+                        .flatMap(s -> s)
                         .collect(joining(", ")))
                 .append(");\n");
         code.append("    }\n");        

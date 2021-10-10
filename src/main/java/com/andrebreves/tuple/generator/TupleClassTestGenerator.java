@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.andrebreves.tuple;
+package com.andrebreves.tuple.generator;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,6 +60,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
     }
 
     private String stringValues() { return degrees.stream().map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
+    private String args() { return degrees.stream().map(to("v%0")).collect(joining(", ", "(", ")")); }
     private String intValues() { return degrees.stream().map(to("%0")).collect(joining(", ", "(", ")")); }
     private String repeatValue(String value) { return degrees.stream().map(to(value)).collect(joining(", ", "(", ")")); }
 
@@ -130,9 +131,42 @@ public class TupleClassTestGenerator implements ClassGenerator {
         generateMapVxTests();
         generateAppendTests();
         generateConcatTests();
-        // TODO: Generate tests for new methods
+        generateTestValuesTests();
+        generateMapValuesTests();
+        generateConsumeValuesTests();
     }
 
+    private void generateTestValuesTests() {
+        code.append("    @Test\n");
+        code.append("    public void testValues_shouldReturnCorrectValue_whenCalledWithValuesPredicate() {\n");
+        code.append("        assertTrue(tuple.testValues(").append(args()).append(" -> true")
+                .append(degrees.stream().map(to(" && \"v%0\".equals(v%0)")).collect(joining()))
+                .append("));\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
+    private void generateMapValuesTests() {
+        code.append("    @Test\n");
+        code.append("    public void mapValues_shouldReturnCorrectValue_whenCalledWithValuesFunction() {\n");
+        code.append("        assertEquals(\"test").append(degrees.stream().map(to("v%0")).collect(joining())).append("\", tuple.mapValues(")
+                .append(args()).append(" -> \"test\"")
+                .append(degrees.stream().map(to(" + v%0")).collect(joining()))
+                .append("));\n");        
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
+    private void generateConsumeValuesTests() {
+        code.append("    @Test\n");
+        code.append("    public void consumeValues_shouldHaveCorrectBehavior_whenCalledWithValuesConsumer() {\n");
+        code.append("        final StringBuilder s = new StringBuilder();\n");
+        code.append("        tuple.consumeValues(").append(args()).append(" -> s.append(\"test\")").append(degrees.stream().map(to(".append(v%0)")).collect(joining())).append(");\n");
+        code.append("        assertEquals(s.toString(), \"test").append(degrees.stream().map(to("v%0")).collect(joining())).append("\");\n");
+        code.append("    }\n");
+        code.append("\n");
+    }
+    
     private void generateOfTests() {
         code.append("    @Test\n");
         code.append("    public void of_shouldReturnNonNull").append(testedClass()).append("Instance_whenCalled() {\n");
