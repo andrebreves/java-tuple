@@ -172,4 +172,21 @@ public class Tuple0Test {
         assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15")));
     }
 
+    @Test
+    public void testValues_shouldReturnCorrectValue_whenCalledWithValuesPredicate() {
+        assertTrue(tuple.testValues(() -> true));
+    }
+
+    @Test
+    public void mapValues_shouldReturnCorrectValue_whenCalledWithValuesFunction() {
+        assertEquals("test", tuple.mapValues(() -> "test"));
+    }
+
+    @Test
+    public void consumeValues_shouldHaveCorrectBehavior_whenCalledWithValuesConsumer() {
+        final StringBuilder s = new StringBuilder();
+        tuple.consumeValues(() -> s.append("test"));
+        assertEquals(s.toString(), "test");
+    }
+
 }

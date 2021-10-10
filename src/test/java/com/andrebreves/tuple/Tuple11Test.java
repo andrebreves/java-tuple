@@ -361,4 +361,21 @@ public class Tuple11Test {
         assertEquals(Tuple15.of("v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15"), tuple.concat(Tuple4.of("v12", "v13", "v14", "v15")));
     }
 
+    @Test
+    public void testValues_shouldReturnCorrectValue_whenCalledWithValuesPredicate() {
+        assertTrue(tuple.testValues((v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) -> true && "v1".equals(v1) && "v2".equals(v2) && "v3".equals(v3) && "v4".equals(v4) && "v5".equals(v5) && "v6".equals(v6) && "v7".equals(v7) && "v8".equals(v8) && "v9".equals(v9) && "v10".equals(v10) && "v11".equals(v11)));
+    }
+
+    @Test
+    public void mapValues_shouldReturnCorrectValue_whenCalledWithValuesFunction() {
+        assertEquals("testv1v2v3v4v5v6v7v8v9v10v11", tuple.mapValues((v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) -> "test" + v1 + v2 + v3 + v4 + v5 + v6 + v7 + v8 + v9 + v10 + v11));
+    }
+
+    @Test
+    public void consumeValues_shouldHaveCorrectBehavior_whenCalledWithValuesConsumer() {
+        final StringBuilder s = new StringBuilder();
+        tuple.consumeValues((v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11) -> s.append("test").append(v1).append(v2).append(v3).append(v4).append(v5).append(v6).append(v7).append(v8).append(v9).append(v10).append(v11));
+        assertEquals(s.toString(), "testv1v2v3v4v5v6v7v8v9v10v11");
+    }
+
 }
