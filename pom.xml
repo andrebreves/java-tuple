@@ -44,6 +44,12 @@
             <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>3.7.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <distributionManagement>
@@ -156,6 +162,21 @@
                 </executions>
             </plugin>
             
+            <!-- Mutation Tests -->
+            <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <version>1.7.3</version>
+                <configuration>
+                    <targetClasses>
+                        <param>com.andrebreves.tuple.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>com.andrebreves.tuple.*</param>
+                    </targetTests>
+                </configuration>
+            </plugin>
+
             <!-- Include generated sources to the clean goal -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
