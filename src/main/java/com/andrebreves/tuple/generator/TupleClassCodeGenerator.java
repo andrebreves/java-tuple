@@ -13,11 +13,14 @@
  */
 package com.andrebreves.tuple.generator;
 
-import java.util.List;
-import java.util.function.Function;
+import static com.andrebreves.tuple.generator.ClassGenerator.args;
+import static com.andrebreves.tuple.generator.ClassGenerator.genericTypes;
+import static com.andrebreves.tuple.generator.ClassGenerator.ordinal;
+import static com.andrebreves.tuple.generator.ClassGenerator.range;
+import static com.andrebreves.tuple.generator.ClassGenerator.rangeClosed;
+import static com.andrebreves.tuple.generator.ClassGenerator.to;
+import static com.andrebreves.tuple.generator.ClassGenerator.typedArgs;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -28,18 +31,18 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
 
     private final int degree;
     private final int maxDegree;
-    private final List<Integer> degrees;
     private final StringBuilder code;
 
     public TupleClassCodeGenerator(int degree, int maxDegree) {
         if (degree < 0) throw new IllegalArgumentException("Invalid degree: " + degree);
         this.degree = degree;
         this.maxDegree = maxDegree;
-        this.degrees = IntStream.rangeClosed(1, degree).boxed().collect(toList());
         code = new StringBuilder();
         generateSourceCode();
     }
 
+    private Stream<Integer> degrees() { return rangeClosed(1, degree); }
+    
     @Override
     public String code() { return code.toString(); }
 
@@ -48,40 +51,6 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
 
     @Override
     public String className() { return "Tuple" + degree; }
-
-    private static <T> Function<T, String> to(String format, Object... args) {
-        return t -> String.format(format.replaceAll("%0", t.toString()), args);
-    }
-
-    private static Stream<Integer> range(int start, int end) {
-        return IntStream.range(start, end).boxed();
-    }
-
-    private static Stream<Integer> rangeClosed(int start, int end) {
-        return IntStream.rangeClosed(start, end).boxed();
-    }
-    
-    private static String ordinal(int cardinal) {
-        switch (cardinal) {
-            case 1 : return cardinal + "st";
-            case 2 : return cardinal + "nd";
-            case 3 : return cardinal + "rd";
-            default: return cardinal + "th";
-        }
-    }
-
-    private String genericTypes() {
-        if (degree == 0) return "";
-        else return degrees.stream().map(to("T%0")).collect(joining(", ", "<", ">"));
-    }
-    
-    private String args() {
-        return degrees.stream().map(to("v%0")).collect(joining(", ", "(", ")"));
-    }
-
-    private String typedArgs() {
-        return degrees.stream().map(to("T%0 v%0")).collect(joining(", ", "(", ")"));
-    }
 
     private void generateSourceCode() {
         code.append(license());
@@ -103,11 +72,13 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     }
     
     private void generateClass() {
+        code.append(generatedNotice(this.getClass()));
+        code.append("\n");
         code.append("/**\n");
         code.append(" * A Tuple that has ").append((degree == 0) ? "no" : degree).append(" value").append((degree == 1) ? "" : "s").append(".\n");
         code.append(" * @author Andre Breves\n");
         code.append(" */\n");
-        code.append("public final class ").append(className()).append(genericTypes()).append(" implements Tuple, Comparable<").append(className()).append(genericTypes()).append("> {\n");
+        code.append("public final class ").append(className()).append(genericTypes(degree)).append(" implements Tuple, Comparable<").append(className()).append(genericTypes(degree)).append("> {\n");
         code.append("\n");
         generateFields();
         generateConstructors();
@@ -118,13 +89,13 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     
     private void generateFields() {
         if (degree == 0) code.append("    private static final Tuple0 INSTANCE = new Tuple0();\n");
-        else code.append(degrees.stream().map(to("    private final T%0 v%0;\n")).collect(joining()));
+        else code.append(degrees().map(to("    private final T%0 v%0;\n")).collect(joining()));
         code.append("\n");
     }
     
     private void generateConstructors() {
-        code.append("    private ").append(className()).append(typedArgs()).append(" {\n");
-        code.append(degrees.stream().map(to("        this.v%0 = v%0;\n")).collect(joining()));
+        code.append("    private ").append(className()).append(typedArgs(degree)).append(" {\n");
+        code.append(degrees().map(to("        this.v%0 = v%0;\n")).collect(joining()));
         code.append("    }\n");
         code.append("\n");
     }
@@ -147,11 +118,11 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     
     private void generateOfMethod() {
         code.append("    /** Returns a Tuple that has ").append((degree == 0) ? "no" : degree).append(" value").append((degree == 1) ? "" : "s").append(". */\n");;
-        code.append("    public static ").append(genericTypes()).append((degree == 0) ? "" : " ").append(className()).append(genericTypes()).append(" of").append(typedArgs()).append(" {\n");
+        code.append("    public static ").append(genericTypes(degree)).append((degree == 0) ? "" : " ").append(className()).append(genericTypes(degree)).append(" of").append(typedArgs(degree)).append(" {\n");
         if (degree == 0) {
             code.append("        return INSTANCE;\n");
         } else {
-            code.append("        return new ").append(className()).append((degree == 0) ? "" : "<>").append(args()).append(";\n");
+            code.append("        return new ").append(className()).append((degree == 0) ? "" : "<>").append(args(degree)).append(";\n");
         }
         code.append("    }\n");
         code.append("\n");
@@ -159,7 +130,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     
     private void generateGetters() {
         if (degree == 0) return;
-        degrees.stream().forEachOrdered(this::generateGetter);
+        degrees().forEachOrdered(this::generateGetter);
         code.append("\n");
     }
 
@@ -180,7 +151,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         if (degree == 0) {
             code.append("        return 0;\n");
         } else {
-            code.append("        return Objects.hash").append(args()).append(";\n");
+            code.append("        return Objects.hash").append(args(degree)).append(";\n");
         }
         code.append("    }\n");
         code.append("\n");
@@ -196,7 +167,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
             code.append("        return true;\n");
         } else {
             code.append("        final ").append(className()).append(" other = (").append(className()).append(") obj;\n");
-            code.append("        return ").append(degrees.stream().map(to("Objects.equals(v%0, other.v%0)")).collect(joining("\n            && ", "", ";\n")));
+            code.append("        return ").append(degrees().map(to("Objects.equals(v%0, other.v%0)")).collect(joining("\n            && ", "", ";\n")));
         }
         code.append("    }\n");
         code.append("\n");
@@ -209,7 +180,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
             code.append("        return \"[]\";\n");
         } else {
             code.append("        StringBuilder sb = new StringBuilder().append('[');\n");
-            code.append(degrees.stream()
+            code.append(degrees()
                     .map(to("        sb.append(v%0)"))
                     .collect(joining(".append(',').append(' ');\n", "", ";\n")));
             code.append("        return sb.append(']').toString();\n");
@@ -232,11 +203,11 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     private void generateCompareToMethod() {
         if (degree > 0) generateCompareStaticMethod();
         code.append("    @Override\n");
-        code.append("    public int compareTo(").append(className()).append(genericTypes()).append(" other) {\n");
+        code.append("    public int compareTo(").append(className()).append(genericTypes(degree)).append(" other) {\n");
         code.append("        if (other == null) throw new NullPointerException();\n");
         if (degree > 0) {
             code.append("        int result;\n");
-            code.append(degrees.stream().map(to("        result = compare(v%0, other.v%0); if (result != 0) return result;\n")).collect(joining()));
+            code.append(degrees().map(to("        result = compare(v%0, other.v%0); if (result != 0) return result;\n")).collect(joining()));
         }
         code.append("        return 0;\n");
         code.append("    }\n");
@@ -244,7 +215,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     }
     
     private void generateMapMethods() {
-        degrees.forEach(v -> generateMapMethod(v));
+        degrees().forEach(v -> generateMapMethod(v));
     }
     
     private void generateMapMethod(int v) {
@@ -267,13 +238,13 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     private void generateConsumeValuesMethod() {
         // TODO: Javadoc
         code.append("    @FunctionalInterface\n");
-        code.append("    public interface ValuesConsumer").append(genericTypes()).append(" {\n");
-        code.append("        void accept").append(typedArgs()).append(";\n");
+        code.append("    public interface ValuesConsumer").append(genericTypes(degree)).append(" {\n");
+        code.append("        void accept").append(typedArgs(degree)).append(";\n");
         code.append("    }\n");
         code.append("\n");
         code.append("    /** Consumes the values of this Tuple using the giving Consumer. */\n");
-        code.append("    public void consumeValues(ValuesConsumer").append(genericTypes()).append(" consumer) {\n");
-        code.append("        consumer.accept").append(args()).append(";\n");
+        code.append("    public void consumeValues(ValuesConsumer").append(genericTypes(degree)).append(" consumer) {\n");
+        code.append("        consumer.accept").append(args(degree)).append(";\n");
         code.append("    }\n");
         code.append("\n");
     }
@@ -282,16 +253,16 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
         // TODO: Javadoc
         code.append("    @FunctionalInterface\n");
         code.append("    public interface ValuesFunction<")
-                .append(degree > 0 ? degrees.stream().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append(degree > 0 ? degrees().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
                 .append("R> {\n");
-        code.append("        R apply").append(typedArgs()).append(";\n");
+        code.append("        R apply").append(typedArgs(degree)).append(";\n");
         code.append("    }\n");
         code.append("\n");
         code.append("    /** Maps the values of this Tuple using the giving Function. */\n");
         code.append("    public <R> R mapValues(ValuesFunction<")
-                .append(degree > 0 ? degrees.stream().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append(degree > 0 ? degrees().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
                 .append("R> function) {\n");
-        code.append("        return function.apply").append(args()).append(";\n");
+        code.append("        return function.apply").append(args(degree)).append(";\n");
         code.append("    }\n");
         code.append("\n");
     }
@@ -299,13 +270,13 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     private void generateTestValuesMethod() {
         // TODO: Javadoc
         code.append("    @FunctionalInterface\n");
-        code.append("    public interface ValuesPredicate").append(genericTypes()).append(" {\n");
-        code.append("        boolean test").append(typedArgs()).append(";\n");
+        code.append("    public interface ValuesPredicate").append(genericTypes(degree)).append(" {\n");
+        code.append("        boolean test").append(typedArgs(degree)).append(";\n");
         code.append("    }\n");
         code.append("\n");
         code.append("    /** Test the values of this Tuple using the giving Predicate. */\n");
-        code.append("    public boolean testValues(ValuesPredicate").append(genericTypes()).append(" predicate) {\n");
-        code.append("        return predicate.test").append(args()).append(";\n");
+        code.append("    public boolean testValues(ValuesPredicate").append(genericTypes(degree)).append(" predicate) {\n");
+        code.append("        return predicate.test").append(args(degree)).append(";\n");
         code.append("    }\n");
         code.append("\n");
     }
@@ -325,7 +296,7 @@ public final class TupleClassCodeGenerator implements ClassGenerator {
     }
 
     private void generateConcatMethods() {
-        IntStream.rangeClosed(degree, maxDegree).forEachOrdered(i -> generateConcatMethod(i));
+        rangeClosed(degree, maxDegree).forEachOrdered(i -> generateConcatMethod(i));
     }
 
     private void generateConcatMethod(int lastDegree) {

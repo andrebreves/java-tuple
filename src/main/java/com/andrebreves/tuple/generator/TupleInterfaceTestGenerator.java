@@ -13,9 +13,10 @@
  */
 package com.andrebreves.tuple.generator;
 
-import java.util.function.Function;
+import static com.andrebreves.tuple.generator.ClassGenerator.args;
+import static com.andrebreves.tuple.generator.ClassGenerator.rangeClosed;
+import static com.andrebreves.tuple.generator.ClassGenerator.to;
 import static java.util.stream.Collectors.joining;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -33,6 +34,10 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
         generateSourceCode();
     }
 
+    private static Stream<Integer> degrees(int degree) {
+        return rangeClosed(1, degree);
+    }
+    
     @Override
     public String code() {
         return code.toString();
@@ -44,29 +49,17 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     @Override
     public String className() { return "TupleTest"; }
 
-    private static <T> Function<T, String> to(String format, Object... args) {
-        return t -> String.format(format.replaceAll("%0", t.toString()), args);
-    }
-
     private String genericType(int degree, String type) {
         if (degree == 0) return "";
-        return IntStream.rangeClosed(1, degree).boxed().map(to(type)).collect(joining(", ", "<", ">"));
+        return rangeClosed(1, degree).map(to(type)).collect(joining(", ", "<", ">"));
     }
 
     private String stringValues(int degree) {
-        return IntStream.rangeClosed(1, degree).boxed().map(to("\"v%0\"")).collect(joining(", ", "(", ")"));
+        return rangeClosed(1, degree).map(to("\"v%0\"")).collect(joining(", ", "(", ")"));
     }
 
     private String fullStringValues(int degree) {
-        return IntStream.rangeClosed(1, degree).boxed().map(to("\"t%d.v%0\"", degree)).collect(joining(", ", "(", ")"));
-    }
-    
-    private String args(int degree) {
-        return IntStream.rangeClosed(1, degree).boxed().map(to("v%0")).collect(joining(", ", "(", ")"));
-    }
-
-    private Stream<Integer> degrees(int degree) {
-        return IntStream.rangeClosed(1, degree).boxed();
+        return rangeClosed(1, degree).map(to("\"t%d.v%0\"", degree)).collect(joining(", ", "(", ")"));
     }
     
     private void generateSourceCode() {
@@ -88,6 +81,8 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     }
 
     private void generateClass() {
+        code.append(generatedNotice(this.getClass()));
+        code.append("\n");
         code.append("public class ").append(className()).append(" {\n");
         code.append("\n");
         generateTests();
@@ -103,11 +98,14 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     }
 
     private void generateTestValuesTests() {
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+        rangeClosed(0, maxDegree).forEachOrdered(degree -> {
             code.append("    @Test\n");
             code.append("    public void testValues_shouldReturnCorrectValue_whenCalledWithValuesPredicateOfTuple").append(degree).append("() {\n");
             code.append("        assertTrue(Tuple.testValues(").append(args(degree)).append(" -> true")
                     .append(degrees(degree).map(to(" && \"v%0\".equals(v%0)")).collect(joining()))
+                    .append(").test(Tuple.of").append(stringValues(degree)).append("));\n");
+            code.append("        assertFalse(Tuple.testValues(").append(args(degree)).append(" -> false")
+                    .append(degrees(degree).map(to(" || \"x%0\".equals(v%0)")).collect(joining()))
                     .append(").test(Tuple.of").append(stringValues(degree)).append("));\n");
             code.append("    }\n");
             code.append("\n");
@@ -115,7 +113,7 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     }
     
     private void generateMapValuesTests() {
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+        rangeClosed(0, maxDegree).forEachOrdered(degree -> {
             code.append("    @Test\n");
             code.append("    public void mapValues_shouldReturnCorrectValue_whenCalledWithValuesFunctionOfTuple").append(degree).append("() {\n");
             code.append("        assertEquals(\"test").append(degrees(degree).map(to("v%0")).collect(joining())).append("\", Tuple.mapValues(")
@@ -128,7 +126,7 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     }
     
     private void generateConsumeValuesTests() {
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+        rangeClosed(0, maxDegree).forEachOrdered(degree -> {
             code.append("    @Test\n");
             code.append("    public void consumeValues_shouldHaveCorrectBehavior_whenCalledWithValuesConsumerOfTuple").append(degree).append("() {\n");
             code.append("        final StringBuilder s = new StringBuilder();\n");
@@ -141,7 +139,7 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     }
     
     private void generateOfTests() {
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(degree -> {
+        rangeClosed(0, maxDegree).forEachOrdered(degree -> {
             code.append("    @Test\n");
             code.append("    public void of_shouldReturnNonNullTuple").append(degree).append("Instance_whenCalledWith").append(degree == 0 ? "No" : String.valueOf(degree)).append("Argument").append(degree == 1 ? "" : "s").append("() {\n");
             code.append("        assertEquals(Tuple").append(degree).append(".class, Tuple.of").append(stringValues(degree)).append(".getClass());\n");
@@ -151,11 +149,11 @@ public class TupleInterfaceTestGenerator implements ClassGenerator {
     }
 
     private void generateVxTests() {
-        IntStream.rangeClosed(1, maxDegree).boxed().forEachOrdered(this::generateVxTest);
+        rangeClosed(1, maxDegree).forEachOrdered(this::generateVxTest);
     }
 
     private void generateVxTest(int degree) {
-        IntStream.rangeClosed(1, degree).boxed().forEachOrdered(value -> {
+        rangeClosed(1, degree).forEachOrdered(value -> {
             code.append("    @Test\n");
             code.append("    public void v").append(value).append("_shouldReturnCorrectValue_whenCalledWithTuple").append(degree).append("() {\n");
             code.append("        assertEquals(\"v").append(value).append("\", Tuple.v").append(value).append("(Tuple.of").append(stringValues(degree)).append("));\n");

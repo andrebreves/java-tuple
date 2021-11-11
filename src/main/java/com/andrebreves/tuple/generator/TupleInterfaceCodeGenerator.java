@@ -13,9 +13,13 @@
  */
 package com.andrebreves.tuple.generator;
 
-import java.util.function.Function;
+import static com.andrebreves.tuple.generator.ClassGenerator.args;
+import static com.andrebreves.tuple.generator.ClassGenerator.genericTypes;
+import static com.andrebreves.tuple.generator.ClassGenerator.ordinal;
+import static com.andrebreves.tuple.generator.ClassGenerator.rangeClosed;
+import static com.andrebreves.tuple.generator.ClassGenerator.to;
+import static com.andrebreves.tuple.generator.ClassGenerator.typedArgs;
 import static java.util.stream.Collectors.joining;
-import java.util.stream.IntStream;
 
 /**
  * Generates the Tuple interface.
@@ -42,37 +46,6 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     @Override
     public String className() { return "Tuple"; }
 
-    private static <T> Function<T, String> to(String format, Object... args) {
-        return t -> String.format(format.replaceAll("%0", t.toString()), args);
-    }
-
-    private static String ordinal(int cardinal) {
-        switch (cardinal) {
-            case 1 : return cardinal + "st";
-            case 2 : return cardinal + "nd";
-            case 3 : return cardinal + "rd";
-            default: return cardinal + "th";
-        }
-    }
-
-    private String genericTypes(int degree) {
-        if (degree == 0) return "";
-        else return IntStream.rangeClosed(1, degree).boxed().map(to("T%0")).collect(joining(", ", "<", ">"));
-    }
-    
-    private String genericTypes(int degree, int showDegree) {
-        if (degree == 0) return "";
-        else return IntStream.rangeClosed(1, degree).boxed().map(d -> (d == showDegree) ? to("T%0").apply(d) : "?").collect(joining(", ", "<", ">"));
-    }
-
-    private String args(int degree) {
-        return IntStream.rangeClosed(1, degree).boxed().map(to("v%0")).collect(joining(", ", "(", ")"));
-    }
-    
-    private String typedArgs(int degree) {
-        return IntStream.rangeClosed(1, degree).boxed().map(to("T%0 v%0")).collect(joining(", ", "(", ")"));
-    }
-    
     private String className(int degree) {
         return "Tuple" + degree;
     }
@@ -104,6 +77,8 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     }
 
     private void generateInterface() {
+        code.append(generatedNotice(this.getClass()));
+        code.append("\n");
         code.append("/**\n");
         code.append(" * A Tuple that has up to ").append(maxDegree).append(" value").append((maxDegree == 1) ? "" : "s").append(".\n");
         code.append(" * @author Andre Breves\n");
@@ -123,11 +98,11 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     }
 
     private void generateStaticMethods() {
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateOfMethod(i));
-        IntStream.rangeClosed(1, maxDegree).boxed().forEachOrdered(i -> generateVMethods(i));
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateConsumeValuesMethod(i));
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateMapValuesMethod(i));
-        IntStream.rangeClosed(0, maxDegree).boxed().forEachOrdered(i -> generateTestValuesMethod(i));
+        rangeClosed(0, maxDegree).forEachOrdered(i -> generateOfMethod(i));
+        rangeClosed(1, maxDegree).forEachOrdered(i -> generateVMethods(i));
+        rangeClosed(0, maxDegree).forEachOrdered(i -> generateConsumeValuesMethod(i));
+        rangeClosed(0, maxDegree).forEachOrdered(i -> generateMapValuesMethod(i));
+        rangeClosed(0, maxDegree).forEachOrdered(i -> generateTestValuesMethod(i));
     }
     
     private void generateOfMethod(int degree) {
@@ -139,7 +114,7 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     }
     
     private void generateVMethods(int degree) {
-        IntStream.rangeClosed(1, degree).boxed().forEachOrdered(i -> generateVMethod(i, degree));
+        rangeClosed(1, degree).forEachOrdered(i -> generateVMethod(i, degree));
         code.append("\n");
     }
     
@@ -171,14 +146,14 @@ public final class TupleInterfaceCodeGenerator implements ClassGenerator {
     private void generateMapValuesMethod(int degree) {
         code.append("    /** Maps the values of the Tuple using the giving Function. */\n");
         code.append("    static <")
-                .append(degree > 0 ? IntStream.rangeClosed(1, degree).boxed().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append(degree > 0 ? rangeClosed(1, degree).map(to("T%0")).collect(joining(", ", "", ", ")) : "")
                 .append("R> Function<")
                 .append(className(degree))
                 .append(genericTypes(degree))
                 .append(", R> mapValues(")
                 .append(className(degree))
                 .append(".ValuesFunction<")
-                .append(degree > 0 ? IntStream.rangeClosed(1, degree).boxed().map(to("T%0")).collect(joining(", ", "", ", ")) : "")
+                .append(degree > 0 ? rangeClosed(1, degree).map(to("T%0")).collect(joining(", ", "", ", ")) : "")
                 .append("R> function) {\n");
         code.append("        return tuple -> tuple.mapValues(function);\n");
         code.append("    }\n");

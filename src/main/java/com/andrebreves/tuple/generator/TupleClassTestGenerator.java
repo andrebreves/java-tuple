@@ -13,13 +13,14 @@
  */
 package com.andrebreves.tuple.generator;
 
+import static com.andrebreves.tuple.generator.ClassGenerator.args;
+import static com.andrebreves.tuple.generator.ClassGenerator.range;
+import static com.andrebreves.tuple.generator.ClassGenerator.rangeClosed;
+import static com.andrebreves.tuple.generator.ClassGenerator.to;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -30,17 +31,17 @@ public class TupleClassTestGenerator implements ClassGenerator {
 
     private final int degree;
     private final int maxDegree;
-    private final List<Integer> degrees;
     private final StringBuilder code;
 
     public TupleClassTestGenerator(int degree, int maxDegree) {
         if (degree < 0) throw new IllegalArgumentException("Invalid degree: " + degree);
         this.degree = degree;
         this.maxDegree = maxDegree;
-        this.degrees = IntStream.rangeClosed(1, degree).boxed().collect(toList());
         code = new StringBuilder();
         generateSourceCode();
     }
+
+    private Stream<Integer> degrees() { return rangeClosed(1, degree); }
 
     @Override
     public String code() {
@@ -55,17 +56,12 @@ public class TupleClassTestGenerator implements ClassGenerator {
 
     private String testedClass() { return "Tuple" + degree; }
 
-    private static <T> Function<T, String> to(String format, Object... args) {
-        return t -> String.format(format.replaceAll("%0", t.toString()), args);
-    }
-
-    private String stringValues() { return degrees.stream().map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
-    private String args() { return degrees.stream().map(to("v%0")).collect(joining(", ", "(", ")")); }
-    private String intValues() { return degrees.stream().map(to("%0")).collect(joining(", ", "(", ")")); }
-    private String repeatValue(String value) { return degrees.stream().map(to(value)).collect(joining(", ", "(", ")")); }
+    private String stringValues() { return degrees().map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
+    private String intValues() { return degrees().map(to("%0")).collect(joining(", ", "(", ")")); }
+    private String repeatValue(String value) { return degrees().map(to(value)).collect(joining(", ", "(", ")")); }
 
     private String mixedValues() {
-        return degrees.stream().map(degree -> {
+        return degrees().map(degree -> {
             switch (degree % 3) {
                 case 0: return "\"v" + degree + "\"";
                 case 1: return String.valueOf(degree);
@@ -76,7 +72,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
 
     private String genericType(String type) {
         if (degree == 0) return "";
-        return IntStream.rangeClosed(1, degree).boxed().map(to(type)).collect(joining(", ", "<", ">"));
+        return rangeClosed(1, degree).map(to(type)).collect(joining(", ", "<", ">"));
     }
 
     private void generateSourceCode() {
@@ -92,12 +88,15 @@ public class TupleClassTestGenerator implements ClassGenerator {
     }
 
     private void generateImports() {
+        code.append("import nl.jqno.equalsverifier.EqualsVerifier;\n");
         code.append("import org.junit.*;\n");
         code.append("import static org.junit.Assert.*;\n");
         code.append("\n");
     }
 
     private void generateClass() {
+        code.append(generatedNotice(this.getClass()));
+        code.append("\n");
         code.append("public class ").append(className()).append(" {\n");
         code.append("\n");
         generateFields();
@@ -139,8 +138,8 @@ public class TupleClassTestGenerator implements ClassGenerator {
     private void generateTestValuesTests() {
         code.append("    @Test\n");
         code.append("    public void testValues_shouldReturnCorrectValue_whenCalledWithValuesPredicate() {\n");
-        code.append("        assertTrue(tuple.testValues(").append(args()).append(" -> true")
-                .append(degrees.stream().map(to(" && \"v%0\".equals(v%0)")).collect(joining()))
+        code.append("        assertTrue(tuple.testValues(").append(args(degree)).append(" -> true")
+                .append(degrees().map(to(" && \"v%0\".equals(v%0)")).collect(joining()))
                 .append("));\n");
         code.append("    }\n");
         code.append("\n");
@@ -149,9 +148,9 @@ public class TupleClassTestGenerator implements ClassGenerator {
     private void generateMapValuesTests() {
         code.append("    @Test\n");
         code.append("    public void mapValues_shouldReturnCorrectValue_whenCalledWithValuesFunction() {\n");
-        code.append("        assertEquals(\"test").append(degrees.stream().map(to("v%0")).collect(joining())).append("\", tuple.mapValues(")
-                .append(args()).append(" -> \"test\"")
-                .append(degrees.stream().map(to(" + v%0")).collect(joining()))
+        code.append("        assertEquals(\"test").append(degrees().map(to("v%0")).collect(joining())).append("\", tuple.mapValues(")
+                .append(args(degree)).append(" -> \"test\"")
+                .append(degrees().map(to(" + v%0")).collect(joining()))
                 .append("));\n");        
         code.append("    }\n");
         code.append("\n");
@@ -161,8 +160,8 @@ public class TupleClassTestGenerator implements ClassGenerator {
         code.append("    @Test\n");
         code.append("    public void consumeValues_shouldHaveCorrectBehavior_whenCalledWithValuesConsumer() {\n");
         code.append("        final StringBuilder s = new StringBuilder();\n");
-        code.append("        tuple.consumeValues(").append(args()).append(" -> s.append(\"test\")").append(degrees.stream().map(to(".append(v%0)")).collect(joining())).append(");\n");
-        code.append("        assertEquals(s.toString(), \"test").append(degrees.stream().map(to("v%0")).collect(joining())).append("\");\n");
+        code.append("        tuple.consumeValues(").append(args(degree)).append(" -> s.append(\"test\")").append(degrees().map(to(".append(v%0)")).collect(joining())).append(");\n");
+        code.append("        assertEquals(s.toString(), \"test").append(degrees().map(to("v%0")).collect(joining())).append("\");\n");
         code.append("    }\n");
         code.append("\n");
     }
@@ -187,13 +186,13 @@ public class TupleClassTestGenerator implements ClassGenerator {
         }
     }
 
-    private String stringValues(int start, int end) { return IntStream.rangeClosed(start, end).boxed().map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
+    private String stringValues(int start, int end) { return rangeClosed(start, end).map(to("\"v%0\"")).collect(joining(", ", "(", ")")); }
 
     private void generateToStringTests() {
         code.append("    @Test\n");
         code.append("    public void toString_shouldReturnCorrectValue_whenCalled() {\n");
         code.append("        assertEquals(\"").append(
-                IntStream.rangeClosed(1, degree).boxed().map(to("v%0")).collect(joining(", ", "[", "]")))
+                rangeClosed(1, degree).map(to("v%0")).collect(joining(", ", "[", "]")))
                 .append("\", tuple.toString());\n");
         code.append("    }\n");
         code.append("\n");
@@ -224,13 +223,13 @@ public class TupleClassTestGenerator implements ClassGenerator {
     }
     
     private void generateMapVxTests() {
-        degrees.stream().forEachOrdered(d -> {
+        degrees().forEachOrdered(d -> {
             code.append("    @Test\n");
             code.append("    public void mapV").append(d).append("_shouldReturnCorrectValue_whenCalled() {\n");
             code.append("        assertEquals(").append(testedClass()).append(".of").append(Stream.of(
-                    IntStream.range(1, d).boxed().map(to("\"v%0\"")),
+                    range(1, d).map(to("\"v%0\"")),
                     Stream.of("\"v" + d + "M\""),
-                    IntStream.rangeClosed(d + 1, degree).boxed().map(to("\"v%0\"")))
+                    rangeClosed(d + 1, degree).map(to("\"v%0\"")))
                     .flatMap(s -> s)
                     .collect(joining(", ", "(", ")")))
                     .append(", tuple.mapV").append(d).append("(v -> v + \"M\"));\n");
@@ -240,7 +239,7 @@ public class TupleClassTestGenerator implements ClassGenerator {
     }
 
     private void generateVxTests() {
-        degrees.stream().forEachOrdered(d -> {
+        degrees().forEachOrdered(d -> {
             String v = "v" + d;
             code.append("    @Test\n");
             code.append("    public void ").append(v).append("_shouldReturnCorrectValue_whenCalled() {\n");
@@ -259,6 +258,11 @@ public class TupleClassTestGenerator implements ClassGenerator {
     }
 
     private void generateEqualsTests() {
+        code.append("    @Test\n");
+        code.append("    public void equals_shouldFollowContract() {\n");
+        code.append("        EqualsVerifier.forClass(").append(testedClass()).append(".class).verify();\n");
+        code.append("    }\n");
+        code.append("\n");
         code.append("    @Test\n");
         code.append("    public void equals_shouldReturnTrue_whenCalledWithTheSameTuple() {\n");
         code.append("        assertTrue(tuple.equals(tuple));\n");
