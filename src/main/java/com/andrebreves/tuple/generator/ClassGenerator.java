@@ -19,6 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.function.Function;
+import static java.util.stream.Collectors.joining;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public interface ClassGenerator {
 
@@ -40,6 +44,15 @@ public interface ClassGenerator {
         code.append(" * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n");
         code.append(" * See the License for the specific language governing permissions and\n");
         code.append(" * limitations under the License.\n");
+        code.append(" */\n");
+        return code.toString();
+    }
+
+    default String generatedNotice(Class<?> generator) {
+        StringBuilder code = new StringBuilder();
+        code.append("/* * * * * DO NOT MODIFY THIS FILE * * * *\n");
+        code.append(" * This source code is auto-generated").append(generator == null ? "" : (" by " + generator.getCanonicalName())).append("\n");
+        code.append(" * Changes will be overwritten in the compilation process\n");
         code.append(" */\n");
         return code.toString();
     }
@@ -85,5 +98,46 @@ public interface ClassGenerator {
         Files.createDirectories(path.getParent());
         return Files.write(path, code().getBytes(StandardCharsets.UTF_8));
     };
+
+    // Utility Methods
+    
+    static Stream<Integer> range(int start, int end) {
+        return IntStream.range(start, end).boxed();
+    }
+
+    static Stream<Integer> rangeClosed(int start, int end) {
+        return IntStream.rangeClosed(start, end).boxed();
+    }
+    
+    static <T> Function<T, String> to(String format, Object... args) {
+        return t -> String.format(format.replaceAll("%0", t.toString()), args);
+    }
+
+    static String ordinal(int cardinal) {
+        switch (cardinal) {
+            case 1 : return cardinal + "st";
+            case 2 : return cardinal + "nd";
+            case 3 : return cardinal + "rd";
+            default: return cardinal + "th";
+        }
+    }
+
+    static String args(int degree) {
+        return IntStream.rangeClosed(1, degree).boxed().map(to("v%0")).collect(joining(", ", "(", ")"));
+    }
+
+    static String typedArgs(int degree) {
+        return IntStream.rangeClosed(1, degree).boxed().map(to("T%0 v%0")).collect(joining(", ", "(", ")"));
+    }
+
+    static String genericTypes(int degree) {
+        if (degree == 0) return "";
+        else return IntStream.rangeClosed(1, degree).boxed().map(to("T%0")).collect(joining(", ", "<", ">"));
+    }
+    
+    static String genericTypes(int degree, int showDegree) {
+        if (degree == 0) return "";
+        else return IntStream.rangeClosed(1, degree).boxed().map(d -> (d == showDegree) ? to("T%0").apply(d) : "?").collect(joining(", ", "<", ">"));
+    }
 
 }
